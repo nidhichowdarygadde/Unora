@@ -1,51 +1,82 @@
-import { useEffect } from "react";
-import "@/App.css";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Toaster } from '@/components/ui/sonner';
+import Landing from '@/pages/Landing';
+import AuthCallback from '@/pages/AuthCallback';
+import Dashboard from '@/pages/Dashboard';
+import CreateGroup from '@/pages/CreateGroup';
+import GroupDetail from '@/pages/GroupDetail';
+import MemberPreferences from '@/pages/MemberPreferences';
+import PlanDisplay from '@/pages/PlanDisplay';
+import ProtectedRoute from '@/components/ProtectedRoute';
+import '@/App.css';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+export const API = `${BACKEND_URL}/api`;
 
-const Home = () => {
-  const helloWorldApi = async () => {
-    try {
-      const response = await axios.get(`${API}/`);
-      console.log(response.data.message);
-    } catch (e) {
-      console.error(e, `errored out requesting / api`);
-    }
-  };
-
-  useEffect(() => {
-    helloWorldApi();
-  }, []);
-
+function AppRouter() {
+  const location = useLocation();
+  
+  if (location.hash?.includes('session_id=')) {
+    return <AuthCallback />;
+  }
+  
   return (
-    <div>
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://emergent.sh"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <img src="https://avatars.githubusercontent.com/in/1201222?s=120&u=2686cf91179bbafbc7a71bfbc43004cf9ae1acea&v=4" />
-        </a>
-        <p className="mt-5">Building something incredible ~!</p>
-      </header>
-    </div>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<Landing />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/create-group"
+          element={
+            <ProtectedRoute>
+              <CreateGroup />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/groups/:groupId"
+          element={
+            <ProtectedRoute>
+              <GroupDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/groups/:groupId/members/:memberId/preferences"
+          element={
+            <ProtectedRoute>
+              <MemberPreferences />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/groups/:groupId/plan"
+          element={
+            <ProtectedRoute>
+              <PlanDisplay />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </AnimatePresence>
   );
-};
+}
 
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />}>
-            <Route index element={<Home />} />
-          </Route>
-        </Routes>
+        <AppRouter />
+        <Toaster />
       </BrowserRouter>
     </div>
   );
