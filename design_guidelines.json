@@ -1,0 +1,175 @@
+{
+  "brand_identity": {
+    "name": "Unora",
+    "tagline": "Make time, together.",
+    "tone": "Calm, Human, Respectful, Non-addictive",
+    "aesthetic": "Organic Minimalist Premium",
+    "principles": [
+      "Fusion over Imitation: Mix botanical aesthetics with productivity precision.",
+      "Emotion First: Every interaction should feel like a deep breath, not a notification.",
+      "Content is King: Typography and negative space drive the narrative.",
+      "Zoom In: Focus on the essential details of the plan.",
+      "Negative Space: Generous padding to reduce cognitive load."
+    ]
+  },
+  "typography": {
+    "fonts": {
+      "heading": {
+        "family": "Fraunces",
+        "url": "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;400;600&display=swap",
+        "weights": ["300", "400", "600"],
+        "usage": "Headings, Hero Text, Brand Moments"
+      },
+      "body": {
+        "family": "Outfit",
+        "url": "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&display=swap",
+        "weights": ["300", "400", "500", "600"],
+        "usage": "Body text, UI elements, Buttons, Inputs"
+      }
+    },
+    "rules": [
+      "Never use Inter for headings.",
+      "Use tight tracking (tracking-tight) for headings larger than 24px.",
+      "Use relaxed line-height (leading-relaxed) for body text.",
+      "Headings should be expressive: use lighter weights (300) for elegance or bold (600) for emphasis."
+    ]
+  },
+  "colors": {
+    "palette": {
+      "light": {
+        "background": "#FDFCF8",
+        "foreground": "#2D2A26",
+        "card": "#FFFFFF",
+        "card_foreground": "#2D2A26",
+        "primary": "#3A5A40",
+        "primary_foreground": "#FFFFFF",
+        "secondary": "#DAD7CD",
+        "secondary_foreground": "#2D2A26",
+        "muted": "#F0EFEA",
+        "muted_foreground": "#6C757D",
+        "accent": "#A3B18A",
+        "accent_foreground": "#1A1C18",
+        "destructive": "#BC4749",
+        "destructive_foreground": "#FFFFFF",
+        "border": "#E5E3DC",
+        "input": "#F0EFEA",
+        "ring": "#3A5A40"
+      },
+      "dark": {
+        "background": "#1A1C18",
+        "foreground": "#E2E2E2",
+        "card": "#242620",
+        "card_foreground": "#E2E2E2",
+        "primary": "#A3B18A",
+        "primary_foreground": "#1A1C18",
+        "secondary": "#344E41",
+        "secondary_foreground": "#E2E2E2",
+        "muted": "#2C2E28",
+        "muted_foreground": "#A1A1AA",
+        "accent": "#3A5A40",
+        "accent_foreground": "#E2E2E2",
+        "destructive": "#7F292B",
+        "destructive_foreground": "#E2E2E2",
+        "border": "#343630",
+        "input": "#2C2E28",
+        "ring": "#A3B18A"
+      }
+    },
+    "usage_rules": [
+      "Do not use pure black (#000000) or pure white (#FFFFFF) for backgrounds.",
+      "Primary color is for high-priority actions only (Create, Confirm).",
+      "Use 'muted' or 'secondary' for supportive elements to maintain calmness.",
+      "Avoid high-saturation colors except for small status indicators."
+    ]
+  },
+  "layout": {
+    "spacing_system": {
+      "base": "4px",
+      "scale": {
+        "container_padding": "p-6 md:p-8",
+        "section_gap": "gap-8 md:gap-12",
+        "item_gap": "gap-4"
+      }
+    },
+    "grid_system": {
+      "mobile": "grid-cols-1",
+      "tablet": "grid-cols-2",
+      "desktop": "grid-cols-3",
+      "bento_rules": "Use 'col-span-full' for hero cards, 'col-span-1' for standard items."
+    },
+    "container": {
+      "max_width": "max-w-md md:max-w-2xl lg:max-w-4xl mx-auto",
+      "alignment": "Center aligned on desktop, full width on mobile."
+    }
+  },
+  "components": {
+    "buttons": {
+      "style": "rounded-full px-8 py-6 text-lg font-medium transition-all duration-300",
+      "variants": {
+        "default": "bg-primary text-primary-foreground hover:opacity-90 hover:scale-[1.02] active:scale-[0.98]",
+        "outline": "border-2 border-primary text-primary hover:bg-primary/5",
+        "ghost": "hover:bg-muted text-foreground"
+      }
+    },
+    "cards": {
+      "style": "rounded-3xl border border-border/50 bg-card shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow duration-300",
+      "padding": "p-6"
+    },
+    "inputs": {
+      "style": "rounded-2xl bg-input border-transparent focus:border-primary focus:ring-0 h-14 px-4 text-lg transition-all duration-200",
+      "label_style": "text-sm font-medium text-muted-foreground mb-2 block"
+    },
+    "navigation": {
+      "style": "fixed bottom-6 left-1/2 -translate-x-1/2 bg-background/80 backdrop-blur-xl border border-white/20 shadow-2xl rounded-full px-6 py-3 flex items-center gap-8 z-50",
+      "item_style": "text-muted-foreground hover:text-primary transition-colors p-2"
+    },
+    "chips": {
+      "style": "rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 cursor-pointer select-none",
+      "active": "bg-primary text-primary-foreground shadow-md",
+      "inactive": "bg-muted text-muted-foreground hover:bg-muted/80"
+    }
+  },
+  "motion": {
+    "page_transition": {
+      "initial": { "opacity": 0, "y": 20 },
+      "animate": { "opacity": 1, "y": 0 },
+      "exit": { "opacity": 0, "y": -20 },
+      "transition": { "duration": 0.3, "ease": "easeOut" }
+    },
+    "micro_interactions": {
+      "hover": { "scale": 1.02 },
+      "tap": { "scale": 0.98 }
+    }
+  },
+  "assets": {
+    "images": {
+      "landing_hero": "https://images.unsplash.com/photo-1653762374114-9ab5d7a7360a?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "moments_placeholder": "https://images.unsplash.com/photo-1766677107338-41a5f939e9a2?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "calm_landscape": "https://images.unsplash.com/photo-1730305072078-fc28ddd92954?crop=entropy&cs=srgb&fm=jpg&q=85"
+    },
+    "icons": {
+      "library": "lucide-react",
+      "style": "stroke-width={1.5}"
+    }
+  },
+  "universal_guidelines": [
+    "Do not use generic gradients. Use solid, earthy colors or subtle noise textures.",
+    "Do not use Inter for headings. Use Fraunces.",
+    "Do not use sharp corners. Use rounded-2xl or rounded-3xl.",
+    "Do not use default Shadcn shadows. Use softer, more diffuse shadows.",
+    "Ensure all interactive elements have a minimum touch target of 44px.",
+    "Use 'sonner' for toasts, not default browser alerts.",
+    "Always add 'data-testid' to interactive elements.",
+    "Mobile-first: Ensure all key actions are within thumb reach (bottom half of screen)."
+  ],
+  "implementation_steps": [
+    "Step 1: Setup Tailwind config with new colors and fonts.",
+    "Step 2: Create the 'Layout' component with the bottom navigation and page transition wrapper.",
+    "Step 3: Build the 'Landing Page' with the hero image and calm typography.",
+    "Step 4: Implement 'Google Auth' (mocked or real) and the 'Dashboard'.",
+    "Step 5: Build the 'Create Group' flow with the multi-step wizard.",
+    "Step 6: Implement the 'Availability Grid' component (critical for the app).",
+    "Step 7: Build the 'Plan Display' with the AI suggestion card.",
+    "Step 8: Polish with micro-interactions and ensure accessibility."
+  ]
+}
