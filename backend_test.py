@@ -162,9 +162,14 @@ class UnoraAPITester:
         }
         response = self.make_request('POST', 'groups', small_group)
         if response and response.status_code == 400:
-            self.log_test("Group size validation (too few)", True)
+            error_msg = response.json().get('detail', '')
+            if "3-10 members" in error_msg:
+                self.log_test("Group size validation (too few)", True)
+            else:
+                self.log_test("Group size validation (too few)", False, f"Wrong error: {error_msg}")
         else:
-            self.log_test("Group size validation (too few)", False, "Should reject < 3 members")
+            status = response.status_code if response else "No response"
+            self.log_test("Group size validation (too few)", False, f"Status: {status}")
 
         # Test too many members
         large_group = {
@@ -174,9 +179,14 @@ class UnoraAPITester:
         }
         response = self.make_request('POST', 'groups', large_group)
         if response and response.status_code == 400:
-            self.log_test("Group size validation (too many)", True)
+            error_msg = response.json().get('detail', '')
+            if "3-10 members" in error_msg:
+                self.log_test("Group size validation (too many)", True)
+            else:
+                self.log_test("Group size validation (too many)", False, f"Wrong error: {error_msg}")
         else:
-            self.log_test("Group size validation (too many)", False, "Should reject > 10 members")
+            status = response.status_code if response else "No response"
+            self.log_test("Group size validation (too many)", False, f"Status: {status}")
 
     def test_get_groups(self):
         """Test getting user's groups"""
