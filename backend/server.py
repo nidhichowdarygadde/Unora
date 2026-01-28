@@ -301,7 +301,7 @@ async def generate_plan(group_id: str, request: Request):
     avg_budget_min = sum(b[0] for b in budget_ranges) // len(budget_ranges)
     avg_budget_max = sum(b[1] for b in budget_ranges) // len(budget_ranges)
     
-    prompt = f\"\"\"You are a thoughtful group activity planner for Unora, an app that helps friends meet offline.
+    prompt = f"""You are a thoughtful group activity planner for Unora, an app that helps friends meet offline.
 
 Group: {group['name']}
 City: {group['city']}
@@ -325,7 +325,7 @@ Respond ONLY in this JSON format:
   "location": "Specific place or area in {group['city']}",
   "suggested_time": "Best time window (e.g., 'Saturday afternoon, 2-4pm')",
   "explanation": "2-3 sentences explaining why this works for the group, mentioning how preferences and availability were balanced"
-}}\"\"\"
+}}"""
     
     try:
         llm_key = os.environ.get("EMERGENT_LLM_KEY")
