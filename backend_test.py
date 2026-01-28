@@ -243,10 +243,15 @@ class UnoraAPITester:
         """Test plan generation without all preferences set"""
         response = self.make_request('POST', f'groups/{group_id}/generate-plan')
         if response and response.status_code == 400:
-            self.log_test("Generate plan (missing prefs)", True)
-            return True
+            error_msg = response.json().get('detail', '')
+            if "preferences" in error_msg.lower():
+                self.log_test("Generate plan (missing prefs)", True)
+                return True
+            else:
+                self.log_test("Generate plan (missing prefs)", False, f"Wrong error: {error_msg}")
         else:
-            self.log_test("Generate plan (missing prefs)", False, "Should require all preferences")
+            status = response.status_code if response else "No response"
+            self.log_test("Generate plan (missing prefs)", False, f"Status: {status}")
         return False
 
     def test_generate_plan_with_ai(self, group_id):
