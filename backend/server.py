@@ -613,10 +613,7 @@ async def get_moments(group_id: str, request: Request):
 @api_router.post("/groups/{group_id}/moments/{moment_id}/media")
 async def add_moment_media(group_id: str, moment_id: str, request: Request):
     user = await get_session_user(request)
-    group = await db.groups.find_one({"group_id": group_id, "creator_user_id": user["user_id"]}, {"_id": 0})
-    
-    if not group:
-        raise HTTPException(status_code=404, detail="Group not found")
+    await check_group_membership(group_id, user["user_id"])
     
     data = await request.json()
     media_item = data.get("media_item")
