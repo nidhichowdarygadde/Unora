@@ -128,6 +128,22 @@ function CreateGroup() {
           </div>
 
           <div>
+            <Label htmlFor="country" className="text-sm font-medium text-muted-foreground mb-2 block">
+              Country
+            </Label>
+            <Input
+              id="country"
+              data-testid="country-input"
+              type="text"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              required
+              className="rounded-2xl bg-input border-transparent focus:border-primary focus:ring-0 h-14 px-4 text-lg transition-all duration-200"
+              placeholder="United States"
+            />
+          </div>
+
+          <div>
             <div className="flex items-center justify-between mb-4">
               <Label className="text-sm font-medium text-muted-foreground">
                 Members ({memberNames.length}/10)
