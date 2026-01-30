@@ -69,6 +69,7 @@ class Member(BaseModel):
     model_config = ConfigDict(extra="ignore")
     member_id: str
     member_token: Optional[str] = None
+    member_user_id: Optional[str] = None
     name: str
     interests: List[str] = []
     budget_min: int = 0
