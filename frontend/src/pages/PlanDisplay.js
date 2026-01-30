@@ -10,6 +10,7 @@ function PlanDisplay() {
   const [group, setGroup] = useState(null);
   const [loading, setLoading] = useState(true);
   const [regenerating, setRegenerating] = useState(false);
+  const [completing, setCompleting] = useState(false);
   const { groupId } = useParams();
   const navigate = useNavigate();
 
