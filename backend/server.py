@@ -232,6 +232,7 @@ async def create_group(group_data: GroupCreate, request: Request):
         group_id=group_id,
         name=group_data.name,
         city=group_data.city,
+        country=group_data.country,
         creator_user_id=user["user_id"],
         members=members,
         current_plan=None,
