@@ -69,6 +69,14 @@ function AppRouter() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/groups/:groupId/moments/:momentId"
+          element={
+            <ProtectedRoute>
+              <MomentDetail />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </AnimatePresence>
   );
