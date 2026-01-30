@@ -176,7 +176,8 @@ class UnoraAPITester:
         # Test too many members
         large_group = {
             "name": "Too Large",
-            "city": "SF", 
+            "city": "SF",
+            "country": "United States", 
             "member_names": [f"Member{i}" for i in range(11)]
         }
         response = self.make_request('POST', 'groups', large_group)
