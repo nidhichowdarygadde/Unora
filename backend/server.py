@@ -599,10 +599,7 @@ async def complete_plan(group_id: str, request: Request):
 @api_router.get("/groups/{group_id}/moments")
 async def get_moments(group_id: str, request: Request):
     user = await get_session_user(request)
-    group = await db.groups.find_one({"group_id": group_id, "creator_user_id": user["user_id"]}, {"_id": 0})
-    
-    if not group:
-        raise HTTPException(status_code=404, detail="Group not found")
+    await check_group_membership(group_id, user["user_id"])
     
     moments = await db.moments.find({"group_id": group_id}, {"_id": 0}).sort("created_at", -1).to_list(100)
     
