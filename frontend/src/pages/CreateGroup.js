@@ -16,6 +16,7 @@ function CreateGroup() {
   const [groupName, setGroupName] = useState('');
   const [city, setCity] = useState('');
   const [country, setCountry] = useState('');
+  const [countryOpen, setCountryOpen] = useState(false);
   const [memberNames, setMemberNames] = useState(['', '', '']);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
