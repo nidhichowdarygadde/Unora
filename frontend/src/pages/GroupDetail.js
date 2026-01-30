@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Sparkles, Users, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Sparkles, Users, CheckCircle, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { API } from '@/App';
 import { toast } from 'sonner';
@@ -10,6 +10,7 @@ function GroupDetail() {
   const [group, setGroup] = useState(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
+  const [copiedMemberId, setCopiedMemberId] = useState(null);
   const { groupId } = useParams();
   const navigate = useNavigate();
 
@@ -31,6 +32,14 @@ function GroupDetail() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const copyInviteLink = (member) => {
+    const inviteUrl = `${window.location.origin}/invite/${groupId}/${member.member_token}`;
+    navigator.clipboard.writeText(inviteUrl);
+    setCopiedMemberId(member.member_id);
+    toast.success(`Invite link copied for ${member.name}`);
+    setTimeout(() => setCopiedMemberId(null), 2000);
   };
 
   const handleGeneratePlan = async () => {
@@ -108,20 +117,38 @@ function GroupDetail() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.1 }}
                 data-testid={`member-card-${member.member_id}`}
-                onClick={() => navigate(`/groups/${groupId}/members/${member.member_id}/preferences`)}
-                className="rounded-2xl border border-border/50 bg-card p-4 flex items-center justify-between cursor-pointer hover:shadow-md transition-shadow duration-200"
+                className="rounded-2xl border border-border/50 bg-card p-4"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                    <Users className="w-5 h-5 text-primary" strokeWidth={1.5} />
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                      <Users className="w-5 h-5 text-primary" strokeWidth={1.5} />
+                    </div>
+                    <span className="font-medium">{member.name}</span>
                   </div>
-                  <span className="font-medium">{member.name}</span>
+                  {member.has_set_preferences && (
+                    <CheckCircle className="w-5 h-5 text-primary" strokeWidth={1.5} />
+                  )}
                 </div>
-                {member.has_set_preferences ? (
-                  <CheckCircle className="w-5 h-5 text-primary" strokeWidth={1.5} />
-                ) : (
-                  <span className="text-xs text-muted-foreground">Set preferences</span>
-                )}
+                <Button
+                  data-testid={`copy-invite-${member.member_id}`}
+                  onClick={() => copyInviteLink(member)}
+                  variant="outline"
+                  size="sm"
+                  className="w-full rounded-full text-xs"
+                >
+                  {copiedMemberId === member.member_id ? (
+                    <>
+                      <Check className="w-3 h-3 mr-1" strokeWidth={1.5} />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3 h-3 mr-1" strokeWidth={1.5} />
+                      Copy invite link
+                    </>
+                  )}
+                </Button>
               </motion.div>
             ))}
           </div>
