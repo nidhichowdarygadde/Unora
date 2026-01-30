@@ -10,6 +10,7 @@ import GroupDetail from '@/pages/GroupDetail';
 import MemberPreferences from '@/pages/MemberPreferences';
 import PlanDisplay from '@/pages/PlanDisplay';
 import InvitePreferences from '@/pages/InvitePreferences';
+import MomentDetail from '@/pages/MomentDetail';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import '@/App.css';
 
