@@ -291,7 +291,19 @@ async def create_group(group_data: GroupCreate, request: Request):
 @api_router.get("/groups", response_model=List[Group])
 async def get_groups(request: Request):
     user = await get_session_user(request)
-    groups = await db.groups.find({"creator_user_id": user["user_id"]}, {"_id": 0}).to_list(1000)
+    
+    # Get groups where user is creator
+    creator_groups = await db.groups.find({"creator_user_id": user["user_id"]}, {"_id": 0}).to_list(1000)
+    
+    # Get groups where user is a member
+    member_groups = await db.groups.find(
+        {"members.member_user_id": user["user_id"]},
+        {"_id": 0}
+    ).to_list(1000)
+    
+    # Combine and deduplicate
+    all_groups = {g["group_id"]: g for g in creator_groups + member_groups}
+    groups = list(all_groups.values())
     
     for group in groups:
         if isinstance(group["created_at"], str):
@@ -303,15 +315,25 @@ async def get_groups(request: Request):
 @api_router.get("/groups/{group_id}", response_model=Group)
 async def get_group(group_id: str, request: Request):
     user = await get_session_user(request)
-    group = await db.groups.find_one({"group_id": group_id, "creator_user_id": user["user_id"]}, {"_id": 0})
-    
-    if not group:
-        raise HTTPException(status_code=404, detail="Group not found")
+    group = await check_group_membership(group_id, user["user_id"])
     
     if isinstance(group["created_at"], str):
         group["created_at"] = datetime.fromisoformat(group["created_at"])
     
     return group
+
+
+@api_router.put("/groups/{group_id}/name")
+async def update_group_name(group_id: str, update_data: GroupNameUpdate, request: Request):
+    user = await get_session_user(request)
+    await check_group_membership(group_id, user["user_id"])
+    
+    await db.groups.update_one(
+        {"group_id": group_id},
+        {"$set": {"name": update_data.name}}
+    )
+    
+    return {"message": "Group name updated"}
 
 
 @api_router.put("/groups/{group_id}/members/{member_id}/preferences")
