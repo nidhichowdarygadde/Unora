@@ -109,7 +109,7 @@ function Dashboard() {
                 className="rounded-3xl border border-border/50 bg-card p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 cursor-pointer"
               >
                 <h3 className="text-xl font-medium mb-2">{group.name}</h3>
-                <p className="text-sm text-muted-foreground mb-3">{group.city}</p>
+                <p className="text-sm text-muted-foreground mb-3">{group.city}, {group.country}</p>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Users className="w-4 h-4" strokeWidth={1.5} />
                   <span>{group.members.length} members</span>
