@@ -384,7 +384,7 @@ async def generate_plan(group_id: str, request: Request):
     prompt = f"""You are a thoughtful group activity planner for Unora, an app that helps friends meet offline.
 
 Group: {group['name']}
-City: {group['city']}
+Location: {group['city']}, {group['country']}
 Number of members: {len(group['members'])}
 
 Member interests: {', '.join(common_interests)}
@@ -394,7 +394,7 @@ Availability summary:
 {json.dumps(availabilities, indent=2)}
 
 Please suggest ONE balanced activity that:
-1. Works within the city and budget
+1. Works within {group['city']}, {group['country']} and the budget
 2. Appeals to the group's interests
 3. Fits their overlapping availability (or the fairest compromise)
 4. Is calm, non-commercial, and encourages real connection
@@ -402,7 +402,7 @@ Please suggest ONE balanced activity that:
 Respond ONLY in this JSON format:
 {{
   "activity": "Activity name",
-  "location": "Specific place or area in {group['city']}",
+  "location": "Specific place or area in {group['city']}, {group['country']}",
   "suggested_time": "Best time window (e.g., 'Saturday afternoon, 2-4pm')",
   "explanation": "2-3 sentences explaining why this works for the group, mentioning how preferences and availability were balanced"
 }}"""
