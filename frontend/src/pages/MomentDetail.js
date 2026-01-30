@@ -284,6 +284,55 @@ function MomentDetail() {
           </div>
         </div>
       </div>
+
+      {/* Media Lightbox */}
+      <Dialog open={selectedMedia !== null} onOpenChange={() => setSelectedMedia(null)}>
+        <DialogContent className="max-w-4xl max-h-[90vh] p-0">
+          <DialogHeader className="p-6 pb-4">
+            <DialogTitle className="text-lg font-light">
+              {selectedMedia?.media.type === 'image' ? 'Photo' : 'Video'}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="px-6 pb-6">
+            {selectedMedia?.media.type === 'image' && (
+              <img
+                src={selectedMedia.media.url}
+                alt="Full size"
+                className="w-full h-auto max-h-[70vh] object-contain rounded-2xl"
+              />
+            )}
+            {selectedMedia?.media.type === 'video' && (
+              <video
+                src={selectedMedia.media.url}
+                controls
+                autoPlay
+                className="w-full h-auto max-h-[70vh] rounded-2xl"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation */}
+      <AlertDialog open={deleteIndex !== null} onOpenChange={() => setDeleteIndex(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete media?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently remove this photo or video from the moment. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteMedia}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </motion.div>
   );
 }
