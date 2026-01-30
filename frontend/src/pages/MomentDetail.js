@@ -102,6 +102,25 @@ function MomentDetail() {
     }
   };
 
+  const handleDeleteMedia = async () => {
+    if (deleteIndex === null) return;
+    
+    try {
+      const response = await fetch(`${API}/groups/${groupId}/moments/${momentId}/media/${deleteIndex}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      
+      if (!response.ok) throw new Error('Failed to delete media');
+      
+      toast.success('Media deleted');
+      setDeleteIndex(null);
+      fetchMoment();
+    } catch (error) {
+      toast.error('Failed to delete media');
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
