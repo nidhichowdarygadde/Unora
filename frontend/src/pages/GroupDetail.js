@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Sparkles, Users, CheckCircle, Copy, Check } from 'lucide-react';
+import { ArrowLeft, Sparkles, Users, CheckCircle, Copy, Check, MapPin, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import MomentsSection from '@/components/MomentsSection';
 import { API } from '@/App';
 import { toast } from 'sonner';
 
