@@ -42,6 +42,11 @@ function CreateGroup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
+    if (!country) {
+      toast.error('Please select a country');
+      return;
+    }
+    
     const filledNames = memberNames.filter(name => name.trim() !== '');
     if (filledNames.length < 3) {
       toast.error('Please add at least 3 members');
