@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 
 function GroupDetail() {
   const [group, setGroup] = useState(null);
+  const [moments, setMoments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
   const [copiedMemberId, setCopiedMemberId] = useState(null);
@@ -17,6 +18,7 @@ function GroupDetail() {
 
   useEffect(() => {
     fetchGroup();
+    fetchMoments();
   }, [groupId]);
 
   const fetchGroup = async () => {
