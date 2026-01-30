@@ -462,10 +462,7 @@ async def update_member_preferences_via_invite(group_id: str, member_token: str,
 @api_router.post("/groups/{group_id}/generate-plan", response_model=Plan)
 async def generate_plan(group_id: str, request: Request):
     user = await get_session_user(request)
-    group = await db.groups.find_one({"group_id": group_id, "creator_user_id": user["user_id"]}, {"_id": 0})
-    
-    if not group:
-        raise HTTPException(status_code=404, detail="Group not found")
+    group = await check_group_membership(group_id, user["user_id"])
     
     members_with_prefs = [m for m in group["members"] if m["has_set_preferences"]]
     if len(members_with_prefs) < len(group["members"]):
