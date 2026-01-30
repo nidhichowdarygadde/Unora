@@ -1,8 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, MapPin } from 'lucide-react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function MomentsSection({ moments }) {
+  const navigate = useNavigate();
+  const { groupId } = useParams();
+
   if (!moments || moments.length === 0) {
     return (
       <div className="rounded-3xl border border-border/50 bg-muted/30 p-6">
@@ -25,7 +29,8 @@ function MomentsSection({ moments }) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
             data-testid={`moment-${moment.moment_id}`}
-            className="rounded-3xl border border-border/50 bg-card p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)]"
+            onClick={() => navigate(`/groups/${groupId}/moments/${moment.moment_id}`)}
+            className="rounded-3xl border border-border/50 bg-card p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all cursor-pointer"
           >
             <div className="flex items-start gap-3 mb-4">
               <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
@@ -67,8 +72,14 @@ function MomentsSection({ moments }) {
             )}
 
             {moment.caption && (
-              <p className="text-sm text-muted-foreground leading-relaxed">
+              <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
                 {moment.caption}
+              </p>
+            )}
+            
+            {!moment.media?.length && !moment.caption && (
+              <p className="text-xs text-muted-foreground italic">
+                Tap to add photos and notes
               </p>
             )}
           </motion.div>
