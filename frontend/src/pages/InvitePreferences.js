@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
-import { CheckCircle } from 'lucide-react';
 import { API } from '@/App';
 import { toast } from 'sonner';
 
@@ -33,15 +32,47 @@ function InvitePreferences() {
   const [availability, setAvailability] = useState({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
   const { groupId, memberToken } = useParams();
+  const navigate = useNavigate();
+  const joinAttempted = useRef(false);
 
   useEffect(() => {
-    fetchInviteData();
+    checkAuthAndFetch();
   }, [groupId, memberToken]);
 
-  const fetchInviteData = async () => {
+  const checkAuthAndFetch = async () => {
     try {
+      const authResponse = await fetch(`${API}/auth/me`, {
+        credentials: 'include',
+      });
+      
+      if (!authResponse.ok) {
+        const currentUrl = window.location.href;
+        window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(currentUrl)}`;
+        return;
+      }
+
+      if (!joinAttempted.current) {
+        joinAttempted.current = true;
+        try {
+          const joinResponse = await fetch(`${API}/invite/${groupId}/${memberToken}/join`, {
+            method: 'POST',
+            credentials: 'include',
+          });
+          
+          if (joinResponse.ok) {
+            const joinData = await joinResponse.json();
+            if (joinData.message === "Already joined") {
+              toast.success('Redirecting to group...');
+              setTimeout(() => navigate(`/groups/${groupId}`), 1000);
+              return;
+            }
+          }
+        } catch (error) {
+          console.error('Join error:', error);
+        }
+      }
+
       const response = await fetch(`${API}/invite/${groupId}/${memberToken}`);
       if (response.ok) {
         const data = await response.json();
@@ -50,7 +81,6 @@ function InvitePreferences() {
         setInterests(member.interests || []);
         setBudget([member.budget_min || 0, member.budget_max || 100]);
         setAvailability(member.availability || {});
-        setSaved(member.has_set_preferences);
       } else {
         toast.error('Invalid invite link');
       }
@@ -92,6 +122,7 @@ function InvitePreferences() {
       const response = await fetch(`${API}/invite/${groupId}/${memberToken}/preferences`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           interests,
           budget_min: budget[0],
@@ -102,8 +133,10 @@ function InvitePreferences() {
 
       if (!response.ok) throw new Error('Failed to save preferences');
 
-      toast.success('Preferences saved! Your group organizer will see this.');
-      setSaved(true);
+      toast.success("You've joined the group!");
+      setTimeout(() => {
+        navigate('/dashboard', { state: { showJoinMessage: true, groupName: inviteData?.group_name } });
+      }, 1500);
     } catch (error) {
       toast.error('Failed to save preferences');
     } finally {
@@ -135,7 +168,7 @@ function InvitePreferences() {
       transition={{ duration: 0.3 }}
       className="min-h-screen pb-24"
     >
-      <div className="max-w-md mx-auto px-6 py-8">
+      <div className="max-w-md md:max-w-2xl mx-auto px-6 py-8">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-light tracking-tight mb-2">Unora</h1>
           <p className="text-muted-foreground">Make time, together.</p>
@@ -147,21 +180,7 @@ function InvitePreferences() {
           <p className="text-muted-foreground">{inviteData.group_city}, {inviteData.group_country}</p>
         </div>
 
-        {saved && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="rounded-2xl bg-primary/10 border border-primary/20 p-4 mb-6 flex items-center gap-3"
-          >
-            <CheckCircle className="w-5 h-5 text-primary" strokeWidth={1.5} />
-            <div className="text-sm">
-              <div className="font-medium">Preferences saved!</div>
-              <div className="text-muted-foreground">You can update them anytime.</div>
-            </div>
-          </motion.div>
-        )}
-
-        <h3 className="text-xl font-medium mb-6">Hey {inviteData.member.name}, set your preferences</h3>
+        <h3 className="text-xl font-medium mb-6">Set your preferences</h3>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           <div>
@@ -173,7 +192,6 @@ function InvitePreferences() {
                 <button
                   key={interest}
                   type="button"
-                  data-testid={`interest-chip-${interest.toLowerCase().replace(/\s+/g, '-')}`}
                   onClick={() => toggleInterest(interest)}
                   className={`rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 cursor-pointer select-none ${
                     interests.includes(interest)
@@ -192,7 +210,6 @@ function InvitePreferences() {
               Budget Range: ${budget[0]} - ${budget[1]}
             </Label>
             <Slider
-              data-testid="budget-slider"
               value={budget}
               onValueChange={setBudget}
               min={0}
@@ -215,7 +232,6 @@ function InvitePreferences() {
                       <button
                         key={timeBlock}
                         type="button"
-                        data-testid={`availability-${day.toLowerCase()}-${timeBlock.toLowerCase()}`}
                         onClick={() => toggleAvailability(day, timeBlock)}
                         className={`flex-1 rounded-full px-3 py-2 text-xs font-medium transition-all duration-200 ${
                           (availability[day] || []).includes(timeBlock)
@@ -233,12 +249,11 @@ function InvitePreferences() {
           </div>
 
           <Button
-            data-testid="save-preferences-button"
             type="submit"
             disabled={saving}
             className="w-full rounded-full py-6 text-lg font-medium hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
           >
-            {saving ? 'Saving...' : saved ? 'Update Preferences' : 'Save Preferences'}
+            {saving ? 'Joining...' : 'Join Group'}
           </Button>
         </form>
       </div>
