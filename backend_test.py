@@ -159,6 +159,7 @@ class UnoraAPITester:
         small_group = {
             "name": "Too Small",
             "city": "SF",
+            "country": "United States",
             "member_names": ["Alice", "Bob"]
         }
         response = self.make_request('POST', 'groups', small_group)
