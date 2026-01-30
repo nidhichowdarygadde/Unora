@@ -194,6 +194,7 @@ async def create_group(group_data: GroupCreate, request: Request):
     for name in group_data.member_names:
         member = Member(
             member_id=f"member_{uuid.uuid4().hex[:12]}",
+            member_token=uuid.uuid4().hex,
             name=name.strip(),
             interests=[],
             budget_min=0,
