@@ -110,6 +110,21 @@ class Plan(BaseModel):
     explanation: str
 
 
+class Moment(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    moment_id: str
+    group_id: str
+    plan_data: dict
+    media: List[dict] = []
+    caption: Optional[str] = None
+    created_at: datetime
+
+
+class MomentCreate(BaseModel):
+    media: List[dict] = []
+    caption: Optional[str] = None
+
+
 async def get_session_user(request: Request) -> dict:
     session_token = request.cookies.get("session_token")
     if not session_token:
