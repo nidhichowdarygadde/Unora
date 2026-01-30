@@ -68,7 +68,7 @@ function Dashboard() {
       transition={{ duration: 0.3 }}
       className="min-h-screen pb-24"
     >
-      <div className="max-w-md mx-auto px-6 py-8">
+      <div className="max-w-md md:max-w-2xl lg:max-w-4xl mx-auto px-6 py-8">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-light tracking-tight mb-1">Your Groups</h1>
@@ -97,7 +97,7 @@ function Dashboard() {
             <p className="text-muted-foreground mb-6">No groups yet. Create your first one!</p>
           </motion.div>
         ) : (
-          <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {groups.map((group, index) => (
               <motion.div
                 key={group.group_id}

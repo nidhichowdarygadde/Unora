@@ -91,7 +91,7 @@ function CreateGroup() {
       transition={{ duration: 0.3 }}
       className="min-h-screen pb-24"
     >
-      <div className="max-w-md mx-auto px-6 py-8">
+      <div className="max-w-md md:max-w-2xl mx-auto px-6 py-8">
         <Button
           data-testid="back-button"
           variant="ghost"
@@ -105,36 +105,38 @@ function CreateGroup() {
         <h1 className="text-3xl font-light tracking-tight mb-8">Create a Group</h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <Label htmlFor="groupName" className="text-sm font-medium text-muted-foreground mb-2 block">
-              Group Name
-            </Label>
-            <Input
-              id="groupName"
-              data-testid="group-name-input"
-              type="text"
-              value={groupName}
-              onChange={(e) => setGroupName(e.target.value)}
-              required
-              className="rounded-2xl bg-input border-transparent focus:border-primary focus:ring-0 h-14 px-4 text-lg transition-all duration-200"
-              placeholder="Weekend Adventures"
-            />
-          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <Label htmlFor="groupName" className="text-sm font-medium text-muted-foreground mb-2 block">
+                Group Name
+              </Label>
+              <Input
+                id="groupName"
+                data-testid="group-name-input"
+                type="text"
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                required
+                className="rounded-2xl bg-input border-transparent focus:border-primary focus:ring-0 h-14 px-4 text-lg transition-all duration-200"
+                placeholder="Weekend Adventures"
+              />
+            </div>
 
-          <div>
-            <Label htmlFor="city" className="text-sm font-medium text-muted-foreground mb-2 block">
-              City
-            </Label>
-            <Input
-              id="city"
-              data-testid="city-input"
-              type="text"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              required
-              className="rounded-2xl bg-input border-transparent focus:border-primary focus:ring-0 h-14 px-4 text-lg transition-all duration-200"
-              placeholder="San Francisco"
-            />
+            <div>
+              <Label htmlFor="city" className="text-sm font-medium text-muted-foreground mb-2 block">
+                City
+              </Label>
+              <Input
+                id="city"
+                data-testid="city-input"
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                required
+                className="rounded-2xl bg-input border-transparent focus:border-primary focus:ring-0 h-14 px-4 text-lg transition-all duration-200"
+                placeholder="San Francisco"
+              />
+            </div>
           </div>
 
           <div>
@@ -203,7 +205,7 @@ function CreateGroup() {
                 </Button>
               )}
             </div>
-            <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {memberNames.map((name, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <Input
