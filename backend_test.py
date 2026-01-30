@@ -136,6 +136,7 @@ class UnoraAPITester:
         group_data = {
             "name": "Test Weekend Group",
             "city": "San Francisco",
+            "country": "United States",
             "member_names": ["Alice", "Bob", "Charlie"]
         }
         
