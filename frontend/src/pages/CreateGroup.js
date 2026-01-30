@@ -56,6 +56,7 @@ function CreateGroup() {
         body: JSON.stringify({
           name: groupName,
           city: city,
+          country: country,
           member_names: filledNames,
         }),
       });
