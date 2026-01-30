@@ -104,6 +104,10 @@ class MemberPreferences(BaseModel):
     availability: dict
 
 
+class GroupNameUpdate(BaseModel):
+    name: str
+
+
 class Plan(BaseModel):
     activity: str
     location: str
