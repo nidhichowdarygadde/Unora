@@ -322,6 +322,7 @@ async def get_invite_info(group_id: str, member_token: str):
     return {
         "group_name": group["name"],
         "group_city": group["city"],
+        "group_country": group["country"],
         "member": member
     }
 
