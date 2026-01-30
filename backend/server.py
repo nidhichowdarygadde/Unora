@@ -574,6 +574,32 @@ async def add_moment_media(group_id: str, moment_id: str, request: Request):
     return {"message": "Media added to moment"}
 
 
+@api_router.delete("/groups/{group_id}/moments/{moment_id}/media/{media_index}")
+async def delete_moment_media(group_id: str, moment_id: str, media_index: int, request: Request):
+    user = await get_session_user(request)
+    group = await db.groups.find_one({"group_id": group_id, "creator_user_id": user["user_id"]}, {"_id": 0})
+    
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+    
+    moment = await db.moments.find_one({"moment_id": moment_id, "group_id": group_id}, {"_id": 0})
+    if not moment:
+        raise HTTPException(status_code=404, detail="Moment not found")
+    
+    media_list = moment.get("media", [])
+    if media_index < 0 or media_index >= len(media_list):
+        raise HTTPException(status_code=400, detail="Invalid media index")
+    
+    media_list.pop(media_index)
+    
+    await db.moments.update_one(
+        {"moment_id": moment_id},
+        {"$set": {"media": media_list}}
+    )
+    
+    return {"message": "Media deleted"}
+
+
 app.include_router(api_router)
 
 app.add_middleware(
