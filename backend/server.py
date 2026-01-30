@@ -540,10 +540,7 @@ Respond ONLY in this JSON format:
 @api_router.post("/groups/{group_id}/accept-plan")
 async def accept_plan(group_id: str, request: Request):
     user = await get_session_user(request)
-    group = await db.groups.find_one({"group_id": group_id, "creator_user_id": user["user_id"]}, {"_id": 0})
-    
-    if not group:
-        raise HTTPException(status_code=404, detail="Group not found")
+    group = await check_group_membership(group_id, user["user_id"])
     
     if not group.get("current_plan"):
         raise HTTPException(status_code=400, detail="No plan to accept")
