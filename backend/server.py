@@ -29,20 +29,27 @@ logger = logging.getLogger(__name__)
 
 @app.on_event("startup")
 async def migrate_existing_groups():
-    """Add member_token to existing members that don't have one"""
+    """Add member_token to existing members that don't have one, and country field"""
     try:
         groups = await db.groups.find({}, {"_id": 0}).to_list(1000)
         for group in groups:
             updated = False
+            
+            # Add member_token if missing
             for member in group.get("members", []):
                 if "member_token" not in member or not member["member_token"]:
                     member["member_token"] = uuid.uuid4().hex
                     updated = True
             
+            # Add country field if missing
+            if "country" not in group or not group["country"]:
+                group["country"] = "United States"
+                updated = True
+            
             if updated:
                 await db.groups.update_one(
                     {"group_id": group["group_id"]},
-                    {"$set": {"members": group["members"]}}
+                    {"$set": {"members": group["members"], "country": group.get("country", "United States")}}
                 )
                 logger.info(f"Migrated group {group['group_id']}")
     except Exception as e:
