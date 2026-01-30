@@ -159,6 +159,21 @@ async def get_session_user(request: Request) -> dict:
     return user_doc
 
 
+async def check_group_membership(group_id: str, user_id: str) -> dict:
+    """Check if user is a member of the group and return the group"""
+    group = await db.groups.find_one({"group_id": group_id}, {"_id": 0})
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+    
+    is_creator = group["creator_user_id"] == user_id
+    is_member = any(m.get("member_user_id") == user_id for m in group.get("members", []))
+    
+    if not is_creator and not is_member:
+        raise HTTPException(status_code=403, detail="Not a member of this group")
+    
+    return group
+
+
 @api_router.post("/auth/session")
 async def process_session(request: Request):
     data = await request.json()
