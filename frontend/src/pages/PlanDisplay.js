@@ -63,10 +63,30 @@ function PlanDisplay() {
       
       if (!response.ok) throw new Error('Failed to accept plan');
       
-      toast.success('Plan accepted! Time to meet up!');
-      navigate(`/groups/${groupId}`);
+      toast.success('Plan accepted!');
+      fetchGroup();
     } catch (error) {
       toast.error('Failed to accept plan');
+    }
+  };
+
+  const handleComplete = async () => {
+    try {
+      setCompleting(true);
+      const response = await fetch(`${API}/groups/${groupId}/complete-plan`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      
+      if (!response.ok) throw new Error('Failed to complete plan');
+      
+      const data = await response.json();
+      toast.success('Plan marked as done! Memory created.');
+      navigate(`/groups/${groupId}`);
+    } catch (error) {
+      toast.error('Failed to complete plan');
+    } finally {
+      setCompleting(false);
     }
   };
 
