@@ -144,7 +144,7 @@ function InvitePreferences() {
         <div className="rounded-3xl border border-border/50 bg-card p-6 mb-6">
           <div className="text-sm text-muted-foreground mb-1">You've been invited to</div>
           <h2 className="text-2xl font-medium mb-1">{inviteData.group_name}</h2>
-          <p className="text-muted-foreground">{inviteData.group_city}</p>
+          <p className="text-muted-foreground">{inviteData.group_city}, {inviteData.group_country}</p>
         </div>
 
         {saved && (
