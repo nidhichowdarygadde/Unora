@@ -430,7 +430,8 @@ async def join_group_via_invite(group_id: str, member_token: str, request: Reque
 
 
 @api_router.put("/invite/{group_id}/{member_token}/preferences")
-async def update_member_preferences_via_invite(group_id: str, member_token: str, prefs: MemberPreferences):
+async def update_member_preferences_via_invite(group_id: str, member_token: str, prefs: MemberPreferences, request: Request):
+    user = await get_session_user(request)
     group = await db.groups.find_one({"group_id": group_id}, {"_id": 0})
     
     if not group:
@@ -440,6 +441,10 @@ async def update_member_preferences_via_invite(group_id: str, member_token: str,
     member_found = False
     for member in members:
         if member["member_token"] == member_token:
+            # Verify this is the correct user
+            if member.get("member_user_id") and member["member_user_id"] != user["user_id"]:
+                raise HTTPException(status_code=403, detail="This invite belongs to another user")
+            
             member["interests"] = prefs.interests
             member["budget_min"] = prefs.budget_min
             member["budget_max"] = prefs.budget_max
@@ -456,7 +461,7 @@ async def update_member_preferences_via_invite(group_id: str, member_token: str,
         {"$set": {"members": members}}
     )
     
-    return {"message": "Preferences updated"}
+    return {"message": "Preferences updated", "group_id": group_id}
 
 
 @api_router.post("/groups/{group_id}/generate-plan", response_model=Plan)
