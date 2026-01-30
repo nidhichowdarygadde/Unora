@@ -27,6 +27,7 @@ function AppRouter() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Landing />} />
+        <Route path="/invite/:groupId/:memberToken" element={<InvitePreferences />} />
         <Route
           path="/dashboard"
           element={
