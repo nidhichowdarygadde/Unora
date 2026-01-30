@@ -642,10 +642,7 @@ async def add_moment_media(group_id: str, moment_id: str, request: Request):
 @api_router.delete("/groups/{group_id}/moments/{moment_id}/media/{media_index}")
 async def delete_moment_media(group_id: str, moment_id: str, media_index: int, request: Request):
     user = await get_session_user(request)
-    group = await db.groups.find_one({"group_id": group_id, "creator_user_id": user["user_id"]}, {"_id": 0})
-    
-    if not group:
-        raise HTTPException(status_code=404, detail="Group not found")
+    await check_group_membership(group_id, user["user_id"])
     
     moment = await db.moments.find_one({"moment_id": moment_id, "group_id": group_id}, {"_id": 0})
     if not moment:
