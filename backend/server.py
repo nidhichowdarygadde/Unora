@@ -75,6 +75,7 @@ class Group(BaseModel):
     group_id: str
     name: str
     city: str
+    country: str
     creator_user_id: str
     members: List[Member] = []
     current_plan: Optional[dict] = None
@@ -84,6 +85,7 @@ class Group(BaseModel):
 class GroupCreate(BaseModel):
     name: str
     city: str
+    country: str
     member_names: List[str]
 
 
