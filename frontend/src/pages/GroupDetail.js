@@ -37,6 +37,20 @@ function GroupDetail() {
     }
   };
 
+  const fetchMoments = async () => {
+    try {
+      const response = await fetch(`${API}/groups/${groupId}/moments`, {
+        credentials: 'include',
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setMoments(data);
+      }
+    } catch (error) {
+      console.error('Failed to load moments:', error);
+    }
+  };
+
   const copyInviteLink = (member) => {
     const inviteUrl = `${window.location.origin}/invite/${groupId}/${member.member_token}`;
     navigator.clipboard.writeText(inviteUrl);
