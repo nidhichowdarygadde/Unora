@@ -101,6 +101,8 @@ function GroupDetail() {
   }
 
   const allPreferencesSet = group.members.every(m => m.has_set_preferences);
+  const currentPlan = group.current_plan;
+  const planStatus = currentPlan?.status || null;
 
   return (
     <motion.div
