@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Dropdown Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fdfcf8;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #666;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+        .country-dropdown {
+            position: relative;
+        }
+        .country-search {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 16px;
+        }
+        .country-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+        .country-option {
+            padding: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+        .country-option:hover {
+            background: #f5f5f5;
+        }
+        .country-option:last-child {
+            border-bottom: none;
+        }
+        .selected-country {
+            background: #3a5a40;
+            color: white;
+        }
+        .button {
+            background: #3a5a40;
+            color: white;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 24px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .button:hover {
+            background: #2d4632;
+        }
+        .validation-error {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Country Dropdown Test</h1>
+    <p>Testing the new country dropdown with auto-complete functionality</p>
+    
+    <form id="testForm">
+        <div class="form-group">
+            <label for="groupName">Group Name</label>
+            <input type="text" id="groupName" data-testid="group-name-input" placeholder="Weekend Adventures" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" data-testid="city-input" placeholder="San Francisco" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="country">Country</label>
+            <div class="country-dropdown">
+                <input 
+                    type="text" 
+                    id="countrySearch" 
+                    data-testid="country-search-input"
+                    class="country-search" 
+                    placeholder="Search country..." 
+                    autocomplete="off"
+                >
+                <div id="countryList" class="country-list" data-testid="country-dropdown-list"></div>
+                <input type="hidden" id="selectedCountry" data-testid="selected-country-value">
+            </div>
+            <div id="countryError" class="validation-error" style="display: none;">Please select a country from the list</div>
+        </div>
+        
+        <button type="submit" class="button" data-testid="submit-button">Test Country Selection</button>
+    </form>
+    
+    <div id="result" style="margin-top: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; display: none;">
+        <h3>Form Data:</h3>
+        <div id="resultContent"></div>
+    </div>
+
+    <script>
+        const countries = [
+            "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda",
+            "Argentina", "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain",
+            "Bangladesh", "Barbados", "Belarus", "Belgium", "Belize", "Benin", "Bhutan",
+            "Bolivia", "Bosnia and Herzegovina", "Botswana", "Brazil", "Brunei", "Bulgaria",
+            "Burkina Faso", "Burundi", "Cabo Verde", "Cambodia", "Cameroon", "Canada",
+            "Central African Republic", "Chad", "Chile", "China", "Colombia", "Comoros",
+            "Congo", "Costa Rica", "Croatia", "Cuba", "Cyprus", "Czech Republic",
+            "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica",
+            "Dominican Republic", "East Timor", "Ecuador", "Egypt", "El Salvador",
+            "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Fiji",
+            "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece",
+            "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Honduras",
+            "Hungary", "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel",
+            "Italy", "Ivory Coast", "Jamaica", "Japan", "Jordan", "Kazakhstan", "Kenya",
+            "Kiribati", "Kosovo", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon",
+            "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg",
+            "Madagascar", "Malawi", "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands",
+            "Mauritania", "Mauritius", "Mexico", "Micronesia", "Moldova", "Monaco", "Mongolia",
+            "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru", "Nepal",
+            "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea",
+            "North Macedonia", "Norway", "Oman", "Pakistan", "Palau", "Palestine", "Panama",
+            "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal",
+            "Qatar", "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia",
+            "Saint Vincent and the Grenadines", "Samoa", "San Marino", "Sao Tome and Principe",
+            "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore",
+            "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", "South Korea",
+            "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland",
+            "Syria", "Taiwan", "Tajikistan", "Tanzania", "Thailand", "Togo", "Tonga",
+            "Trinidad and Tobago", "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda",
+            "Ukraine", "United Arab Emirates", "United Kingdom", "United States", "Uruguay",
+            "Uzbekistan", "Vanuatu", "Vatican City", "Venezuela", "Vietnam", "Yemen", "Zambia",
+            "Zimbabwe"
+        ];
+
+        const countrySearch = document.getElementById('countrySearch');
+        const countryList = document.getElementById('countryList');
+        const selectedCountry = document.getElementById('selectedCountry');
+        const countryError = document.getElementById('countryError');
+        const form = document.getElementById('testForm');
+        const result = document.getElementById('result');
+        const resultContent = document.getElementById('resultContent');
+
+        function filterCountries(searchTerm) {
+            return countries.filter(country => 
+                country.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        function showCountryList(filteredCountries) {
+            countryList.innerHTML = '';
+            
+            if (filteredCountries.length === 0) {
+                countryList.innerHTML = '<div class="country-option">No countries found</div>';
+            } else {
+                filteredCountries.forEach(country => {
+                    const option = document.createElement('div');
+                    option.className = 'country-option';
+                    option.textContent = country;
+                    option.setAttribute('data-testid', `country-option-${country.toLowerCase().replace(/\s+/g, '-')}`);
+                    option.addEventListener('click', () => selectCountry(country));
+                    countryList.appendChild(option);
+                });
+            }
+            
+            countryList.style.display = 'block';
+        }
+
+        function selectCountry(country) {
+            countrySearch.value = country;
+            selectedCountry.value = country;
+            countryList.style.display = 'none';
+            countryError.style.display = 'none';
+        }
+
+        countrySearch.addEventListener('input', (e) => {
+            const searchTerm = e.target.value;
+            
+            if (searchTerm.length === 0) {
+                countryList.style.display = 'none';
+                selectedCountry.value = '';
+                return;
+            }
+            
+            const filteredCountries = filterCountries(searchTerm);
+            showCountryList(filteredCountries);
+            
+            // Clear selected country if search doesn't match exactly
+            if (!countries.includes(searchTerm)) {
+                selectedCountry.value = '';
+            }
+        });
+
+        countrySearch.addEventListener('focus', () => {
+            if (countrySearch.value.length > 0) {
+                const filteredCountries = filterCountries(countrySearch.value);
+                showCountryList(filteredCountries);
+            }
+        });
+
+        // Hide dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.country-dropdown')) {
+                countryList.style.display = 'none';
+            }
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const groupName = document.getElementById('groupName').value;
+            const city = document.getElementById('city').value;
+            const country = selectedCountry.value;
+            
+            // Validate country selection
+            if (!country || !countries.includes(country)) {
+                countryError.style.display = 'block';
+                countryError.textContent = 'Please select a country from the list';
+                return;
+            }
+            
+            countryError.style.display = 'none';
+            
+            // Show results
+            resultContent.innerHTML = `
+                <p><strong>Group Name:</strong> ${groupName}</p>
+                <p><strong>City:</strong> ${city}</p>
+                <p><strong>Country:</strong> ${country}</p>
+                <p><strong>Validation:</strong> ✅ Country selection valid</p>
+            `;
+            result.style.display = 'block';
+        });
+    </script>
+</body>
+</html>
