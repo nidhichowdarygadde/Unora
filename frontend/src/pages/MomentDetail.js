@@ -193,7 +193,8 @@ function MomentDetail() {
                 {moment.media.map((media, idx) => (
                   <div
                     key={idx}
-                    className="rounded-2xl overflow-hidden bg-muted aspect-square"
+                    className="rounded-2xl overflow-hidden bg-muted aspect-square relative group cursor-pointer"
+                    onClick={() => setSelectedMedia({ media, index: idx })}
                   >
                     {media.type === 'image' && (
                       <img
@@ -205,10 +206,23 @@ function MomentDetail() {
                     {media.type === 'video' && (
                       <video
                         src={media.url}
-                        controls
                         className="w-full h-full object-cover"
                       />
                     )}
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                      <Button
+                        data-testid={`delete-media-${idx}`}
+                        variant="destructive"
+                        size="icon"
+                        className="opacity-0 group-hover:opacity-100 transition-opacity rounded-full"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeleteIndex(idx);
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4" strokeWidth={1.5} />
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>
