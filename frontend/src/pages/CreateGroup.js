@@ -141,16 +141,48 @@ function CreateGroup() {
             <Label htmlFor="country" className="text-sm font-medium text-muted-foreground mb-2 block">
               Country
             </Label>
-            <Input
-              id="country"
-              data-testid="country-input"
-              type="text"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              required
-              className="rounded-2xl bg-input border-transparent focus:border-primary focus:ring-0 h-14 px-4 text-lg transition-all duration-200"
-              placeholder="United States"
-            />
+            <Popover open={countryOpen} onOpenChange={setCountryOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  data-testid="country-select"
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={countryOpen}
+                  className="w-full justify-between rounded-2xl bg-input border-transparent hover:bg-input h-14 px-4 text-lg font-normal"
+                >
+                  {country || "Select country..."}
+                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-full p-0" align="start">
+                <Command>
+                  <CommandInput placeholder="Search country..." />
+                  <CommandList>
+                    <CommandEmpty>No country found.</CommandEmpty>
+                    <CommandGroup>
+                      {COUNTRIES.map((countryOption) => (
+                        <CommandItem
+                          key={countryOption}
+                          value={countryOption}
+                          onSelect={(currentValue) => {
+                            setCountry(currentValue === country ? "" : currentValue);
+                            setCountryOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              country === countryOption ? "opacity-100" : "opacity-0"
+                            )}
+                          />
+                          {countryOption}
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </Command>
+              </PopoverContent>
+            </Popover>
           </div>
 
           <div>
