@@ -105,7 +105,7 @@ function GroupDetail() {
         </Button>
 
         <h1 className="text-3xl font-light tracking-tight mb-2">{group.name}</h1>
-        <p className="text-muted-foreground mb-8">{group.city}</p>
+        <p className="text-muted-foreground mb-8">{group.city}, {group.country}</p>
 
         <div className="mb-8">
           <h2 className="text-xl font-medium mb-4">Members</h2>
