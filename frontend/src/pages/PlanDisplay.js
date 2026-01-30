@@ -110,6 +110,7 @@ function PlanDisplay() {
   }
 
   const plan = group.current_plan;
+  const planStatus = plan.status || 'generated';
 
   return (
     <motion.div
@@ -130,7 +131,14 @@ function PlanDisplay() {
           <ArrowLeft className="w-5 h-5" strokeWidth={1.5} />
         </Button>
 
-        <h1 className="text-3xl font-light tracking-tight mb-2">Your Plan</h1>
+        <div className="flex items-center justify-between mb-2">
+          <h1 className="text-3xl font-light tracking-tight">Your Plan</h1>
+          {planStatus === 'accepted' && (
+            <span className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium">
+              Accepted
+            </span>
+          )}
+        </div>
         <p className="text-muted-foreground mb-8">{group.name}</p>
 
         <motion.div
@@ -166,27 +174,41 @@ function PlanDisplay() {
           </div>
         </motion.div>
 
-        <div className="flex gap-3">
+        {planStatus === 'generated' && (
+          <div className="flex gap-3">
+            <Button
+              data-testid="regenerate-plan-button"
+              onClick={handleRegenerate}
+              disabled={regenerating}
+              variant="outline"
+              className="flex-1 rounded-full py-6 text-lg border-2"
+            >
+              <RefreshCw className="w-5 h-5 mr-2" strokeWidth={1.5} />
+              {regenerating ? 'Regenerating...' : 'Regenerate'}
+            </Button>
+            
+            <Button
+              data-testid="accept-plan-button"
+              onClick={handleAccept}
+              className="flex-1 rounded-full py-6 text-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+            >
+              <CheckCircle className="w-5 h-5 mr-2" strokeWidth={1.5} />
+              Accept
+            </Button>
+          </div>
+        )}
+
+        {planStatus === 'accepted' && (
           <Button
-            data-testid="regenerate-plan-button"
-            onClick={handleRegenerate}
-            disabled={regenerating}
-            variant="outline"
-            className="flex-1 rounded-full py-6 text-lg border-2"
-          >
-            <RefreshCw className="w-5 h-5 mr-2" strokeWidth={1.5} />
-            {regenerating ? 'Regenerating...' : 'Regenerate'}
-          </Button>
-          
-          <Button
-            data-testid="accept-plan-button"
-            onClick={handleAccept}
-            className="flex-1 rounded-full py-6 text-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+            data-testid="mark-done-button"
+            onClick={handleComplete}
+            disabled={completing}
+            className="w-full rounded-full py-6 text-lg hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
           >
             <CheckCircle className="w-5 h-5 mr-2" strokeWidth={1.5} />
-            Accept
+            {completing ? 'Marking as done...' : 'Mark as done'}
           </Button>
-        </div>
+        )}
       </div>
     </motion.div>
   );
