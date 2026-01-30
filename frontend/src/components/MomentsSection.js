@@ -21,7 +21,7 @@ function MomentsSection({ moments }) {
   return (
     <div>
       <h3 className="text-lg font-medium mb-4">Moments</h3>
-      <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {moments.map((moment, index) => (
           <motion.div
             key={moment.moment_id}
