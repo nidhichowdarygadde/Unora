@@ -112,7 +112,7 @@ function GroupDetail() {
       transition={{ duration: 0.3 }}
       className="min-h-screen pb-32"
     >
-      <div className="max-w-md mx-auto px-6 py-8">
+      <div className="max-w-md md:max-w-2xl lg:max-w-4xl mx-auto px-6 py-8">
         <Button
           data-testid="back-to-dashboard-button"
           variant="ghost"
@@ -128,7 +128,7 @@ function GroupDetail() {
 
         <div className="mb-8">
           <h2 className="text-xl font-medium mb-4">Members</h2>
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {group.members.map((member, index) => (
               <motion.div
                 key={member.member_id}

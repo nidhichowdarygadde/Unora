@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, Calendar, MapPin, Image as ImageIcon, Plus, X } from 'lucide-react';
+import { ArrowLeft, Calendar, MapPin, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
@@ -125,7 +125,7 @@ function MomentDetail() {
       transition={{ duration: 0.3 }}
       className="min-h-screen pb-24"
     >
-      <div className="max-w-md mx-auto px-6 py-8">
+      <div className="max-w-md md:max-w-2xl lg:max-w-3xl mx-auto px-6 py-8">
         <Button
           data-testid="back-to-group-button"
           variant="ghost"
@@ -166,7 +166,7 @@ function MomentDetail() {
               <Label className="text-sm font-medium text-muted-foreground mb-3 block">
                 Photos & Videos
               </Label>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 {moment.media.map((media, idx) => (
                   <div
                     key={idx}
