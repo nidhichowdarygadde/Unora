@@ -173,25 +173,40 @@ function GroupDetail() {
           </div>
         </div>
 
-        {group.current_plan && (
-          <Button
-            data-testid="view-current-plan-button"
-            onClick={() => navigate(`/groups/${groupId}/plan`)}
-            variant="outline"
-            className="w-full rounded-full py-6 text-lg mb-4 border-2"
-          >
-            View Current Plan
-          </Button>
+        {group.current_plan && (planStatus === 'accepted' || planStatus === 'generated') && (
+          <div className="mb-8">
+            <h2 className="text-xl font-medium mb-4">
+              {planStatus === 'accepted' ? 'Active Plan' : 'Latest Plan'}
+            </h2>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              data-testid="active-plan-card"
+              className="rounded-3xl border border-border/50 bg-card p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] cursor-pointer hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-shadow"
+              onClick={() => navigate(`/groups/${groupId}/plan`)}
+            >
+              {planStatus === 'accepted' && (
+                <span className="inline-block text-xs px-3 py-1 rounded-full bg-primary/10 text-primary font-medium mb-3">
+                  Accepted
+                </span>
+              )}
+              <h3 className="text-lg font-medium mb-3">{currentPlan.activity}</h3>
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <MapPin className="w-4 h-4" strokeWidth={1.5} />
+                  <span>{currentPlan.location}</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Clock className="w-4 h-4" strokeWidth={1.5} />
+                  <span>{currentPlan.suggested_time}</span>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         )}
 
-        <div className="rounded-3xl border border-border/50 bg-muted/30 p-6 mb-8">
-          <h3 className="text-lg font-medium mb-2">Moments</h3>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            After you complete a plan, memories will appear here.
-          </p>
-          <div className="mt-4 h-32 rounded-2xl bg-muted/50 flex items-center justify-center">
-            <span className="text-xs text-muted-foreground">Coming soon</span>
-          </div>
+        <div className="mb-8">
+          <MomentsSection moments={moments} />
         </div>
       </div>
 
@@ -199,12 +214,12 @@ function GroupDetail() {
         <Button
           data-testid="generate-plan-button"
           onClick={handleGeneratePlan}
-          disabled={!allPreferencesSet || generating}
+          disabled={!allPreferencesSet || generating || (planStatus === 'accepted')}
           size="lg"
           className="rounded-full px-8 py-6 text-lg font-medium hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 shadow-2xl"
         >
           <Sparkles className="w-5 h-5 mr-2" strokeWidth={1.5} />
-          {generating ? 'Generating...' : 'Generate Plan'}
+          {generating ? 'Generating...' : planStatus === 'accepted' ? 'Plan Active' : 'Generate Plan'}
         </Button>
       </div>
     </motion.div>
