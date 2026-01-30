@@ -468,7 +468,107 @@ async def accept_plan(group_id: str, request: Request):
     if not group.get("current_plan"):
         raise HTTPException(status_code=400, detail="No plan to accept")
     
-    return {"message": "Plan accepted", "plan": group["current_plan"]}
+    plan_with_status = {
+        **group["current_plan"],
+        "status": "accepted",
+        "accepted_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.groups.update_one(
+        {"group_id": group_id},
+        {"$set": {"current_plan": plan_with_status}}
+    )
+    
+    return {"message": "Plan accepted", "plan": plan_with_status}
+
+
+@api_router.post("/groups/{group_id}/complete-plan")
+async def complete_plan(group_id: str, request: Request):
+    user = await get_session_user(request)
+    group = await db.groups.find_one({"group_id": group_id, "creator_user_id": user["user_id"]}, {"_id": 0})
+    
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+    
+    current_plan = group.get("current_plan")
+    if not current_plan or current_plan.get("status") != "accepted":
+        raise HTTPException(status_code=400, detail="No accepted plan to complete")
+    
+    plan_with_status = {
+        **current_plan,
+        "status": "completed",
+        "completed_at": datetime.now(timezone.utc).isoformat()
+    }
+    
+    await db.groups.update_one(
+        {"group_id": group_id},
+        {"$set": {"current_plan": plan_with_status}}
+    )
+    
+    moment_id = f"moment_{uuid.uuid4().hex[:12]}"
+    moment = Moment(
+        moment_id=moment_id,
+        group_id=group_id,
+        plan_data=plan_with_status,
+        media=[],
+        caption=None,
+        created_at=datetime.now(timezone.utc)
+    )
+    
+    moment_dict = moment.model_dump()
+    moment_dict["created_at"] = moment_dict["created_at"].isoformat()
+    await db.moments.insert_one(moment_dict)
+    
+    return {"message": "Plan completed", "moment_id": moment_id}
+
+
+@api_router.get("/groups/{group_id}/moments")
+async def get_moments(group_id: str, request: Request):
+    user = await get_session_user(request)
+    group = await db.groups.find_one({"group_id": group_id, "creator_user_id": user["user_id"]}, {"_id": 0})
+    
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+    
+    moments = await db.moments.find({"group_id": group_id}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    
+    for moment in moments:
+        if isinstance(moment["created_at"], str):
+            moment["created_at"] = datetime.fromisoformat(moment["created_at"])
+    
+    return moments
+
+
+@api_router.post("/groups/{group_id}/moments/{moment_id}/media")
+async def add_moment_media(group_id: str, moment_id: str, request: Request):
+    user = await get_session_user(request)
+    group = await db.groups.find_one({"group_id": group_id, "creator_user_id": user["user_id"]}, {"_id": 0})
+    
+    if not group:
+        raise HTTPException(status_code=404, detail="Group not found")
+    
+    data = await request.json()
+    media_item = data.get("media_item")
+    caption = data.get("caption")
+    
+    moment = await db.moments.find_one({"moment_id": moment_id, "group_id": group_id}, {"_id": 0})
+    if not moment:
+        raise HTTPException(status_code=404, detail="Moment not found")
+    
+    media_list = moment.get("media", [])
+    if media_item:
+        media_list.append(media_item)
+    
+    update_data = {"media": media_list}
+    if caption is not None:
+        update_data["caption"] = caption
+    
+    await db.moments.update_one(
+        {"moment_id": moment_id},
+        {"$set": update_data}
+    )
+    
+    return {"message": "Media added to moment"}
 
 
 app.include_router(api_router)
