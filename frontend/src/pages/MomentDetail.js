@@ -15,6 +15,8 @@ function MomentDetail() {
   const [caption, setCaption] = useState('');
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [selectedMedia, setSelectedMedia] = useState(null);
+  const [deleteIndex, setDeleteIndex] = useState(null);
   const { groupId, momentId } = useParams();
   const navigate = useNavigate();
 
