@@ -446,6 +446,9 @@ Respond ONLY in this JSON format:
         plan = Plan(**plan_data)
         
         plan_dict = plan.model_dump()
+        plan_dict["status"] = "generated"
+        plan_dict["generated_at"] = datetime.now(timezone.utc).isoformat()
+        
         await db.groups.update_one(
             {"group_id": group_id},
             {"$set": {"current_plan": plan_dict}}
