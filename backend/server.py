@@ -391,6 +391,44 @@ async def get_invite_info(group_id: str, member_token: str):
     }
 
 
+@api_router.post("/invite/{group_id}/{member_token}/join")
+async def join_group_via_invite(group_id: str, member_token: str, request: Request):
+    user = await get_session_user(request)
+    group = await db.groups.find_one({"group_id": group_id}, {"_id": 0})
+    
+    if not group:
+        raise HTTPException(status_code=404, detail="Invalid invite link")
+    
+    # Find member by token
+    member_found = False
+    member_index = -1
+    for idx, member in enumerate(group["members"]):
+        if member["member_token"] == member_token:
+            # Check if already joined
+            if member.get("member_user_id"):
+                if member["member_user_id"] == user["user_id"]:
+                    return {"message": "Already joined", "group_id": group_id}
+                else:
+                    raise HTTPException(status_code=400, detail="This invite has already been claimed")
+            
+            # Join the group
+            member["member_user_id"] = user["user_id"]
+            member["name"] = user["name"]
+            member_found = True
+            member_index = idx
+            break
+    
+    if not member_found:
+        raise HTTPException(status_code=404, detail="Invalid invite link")
+    
+    await db.groups.update_one(
+        {"group_id": group_id},
+        {"$set": {f"members.{member_index}": group["members"][member_index]}}
+    )
+    
+    return {"message": "Successfully joined group", "group_id": group_id}
+
+
 @api_router.put("/invite/{group_id}/{member_token}/preferences")
 async def update_member_preferences_via_invite(group_id: str, member_token: str, prefs: MemberPreferences):
     group = await db.groups.find_one({"group_id": group_id}, {"_id": 0})
