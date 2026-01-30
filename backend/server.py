@@ -278,6 +278,59 @@ async def update_member_preferences(group_id: str, member_id: str, prefs: Member
     return {"message": "Preferences updated"}
 
 
+@api_router.get("/invite/{group_id}/{member_token}")
+async def get_invite_info(group_id: str, member_token: str):
+    group = await db.groups.find_one({"group_id": group_id}, {"_id": 0})
+    
+    if not group:
+        raise HTTPException(status_code=404, detail="Invalid invite link")
+    
+    member = None
+    for m in group["members"]:
+        if m["member_token"] == member_token:
+            member = m
+            break
+    
+    if not member:
+        raise HTTPException(status_code=404, detail="Invalid invite link")
+    
+    return {
+        "group_name": group["name"],
+        "group_city": group["city"],
+        "member": member
+    }
+
+
+@api_router.put("/invite/{group_id}/{member_token}/preferences")
+async def update_member_preferences_via_invite(group_id: str, member_token: str, prefs: MemberPreferences):
+    group = await db.groups.find_one({"group_id": group_id}, {"_id": 0})
+    
+    if not group:
+        raise HTTPException(status_code=404, detail="Invalid invite link")
+    
+    members = group["members"]
+    member_found = False
+    for member in members:
+        if member["member_token"] == member_token:
+            member["interests"] = prefs.interests
+            member["budget_min"] = prefs.budget_min
+            member["budget_max"] = prefs.budget_max
+            member["availability"] = prefs.availability
+            member["has_set_preferences"] = True
+            member_found = True
+            break
+    
+    if not member_found:
+        raise HTTPException(status_code=404, detail="Invalid invite link")
+    
+    await db.groups.update_one(
+        {"group_id": group_id},
+        {"$set": {"members": members}}
+    )
+    
+    return {"message": "Preferences updated"}
+
+
 @api_router.post("/groups/{group_id}/generate-plan", response_model=Plan)
 async def generate_plan(group_id: str, request: Request):
     user = await get_session_user(request)
