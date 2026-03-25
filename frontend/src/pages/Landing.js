@@ -5,6 +5,7 @@ import { Users, Calendar, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 function Landing() {
+  const navigate = useNavigate();
   const handleLogin = () => {
     const redirectUrl = window.location.origin + '/dashboard';
     window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
