@@ -68,12 +68,23 @@ async def migrate_existing_groups():
 @api_router.get("/demo/group")
 async def get_demo_group():
     """Public demo group data"""
+    demo_group = await db.groups.find_one({"group_id": DEMO_GROUP["group_id"]}, {"_id": 0})
+    if demo_group:
+        if isinstance(demo_group.get("created_at"), str):
+            demo_group["created_at"] = datetime.fromisoformat(demo_group["created_at"])
+        return demo_group
     return DEMO_GROUP
 
 
 @api_router.get("/demo/moments")
 async def get_demo_moments():
     """Public demo moments data"""
+    demo_moments = await db.moments.find({"group_id": DEMO_GROUP["group_id"]}, {"_id": 0}).to_list(10)
+    for moment in demo_moments:
+        if isinstance(moment.get("created_at"), str):
+            moment["created_at"] = datetime.fromisoformat(moment["created_at"])
+    if demo_moments:
+        return demo_moments
     return [DEMO_MOMENT]
 
 
