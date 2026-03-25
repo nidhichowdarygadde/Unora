@@ -53,8 +53,34 @@ async def migrate_existing_groups():
                     {"$set": {"members": group["members"], "country": group.get("country", "United States")}}
                 )
                 logger.info(f"Migrated group {group['group_id']}")
+        
+        # Seed demo data if not exists
+        demo_exists = await db.groups.find_one({"group_id": DEMO_GROUP["group_id"]})
+        if not demo_exists:
+            await db.groups.insert_one(DEMO_GROUP)
+            await db.moments.insert_one(DEMO_MOMENT)
+            logger.info("Demo data seeded successfully")
     except Exception as e:
         logger.error(f"Migration error: {e}")
+
+
+# Demo endpoints (public, no auth required)
+@api_router.get("/demo/group")
+async def get_demo_group():
+    """Public demo group data"""
+    return DEMO_GROUP
+
+
+@api_router.get("/demo/moments")
+async def get_demo_moments():
+    """Public demo moments data"""
+    return [DEMO_MOMENT]
+
+
+@api_router.get("/demo/invite-token")
+async def get_demo_invite_token():
+    """Get the permanent demo invite token"""
+    return {"invite_token": DEMO_INVITE_TOKEN, "group_id": DEMO_GROUP["group_id"]}
 
 
 class User(BaseModel):
