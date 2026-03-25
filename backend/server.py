@@ -70,8 +70,13 @@ async def get_demo_group():
     """Public demo group data"""
     demo_group = await db.groups.find_one({"group_id": DEMO_GROUP["group_id"]}, {"_id": 0})
     if demo_group:
-        if isinstance(demo_group.get("created_at"), str):
-            demo_group["created_at"] = datetime.fromisoformat(demo_group["created_at"])
+        # Convert datetime objects to ISO format strings
+        if isinstance(demo_group.get("created_at"), datetime):
+            demo_group["created_at"] = demo_group["created_at"].isoformat()
+        if demo_group.get("current_plan"):
+            for key in ["generated_at", "accepted_at", "completed_at"]:
+                if key in demo_group["current_plan"] and isinstance(demo_group["current_plan"][key], datetime):
+                    demo_group["current_plan"][key] = demo_group["current_plan"][key].isoformat()
         return demo_group
     return DEMO_GROUP
 
@@ -81,8 +86,18 @@ async def get_demo_moments():
     """Public demo moments data"""
     demo_moments = await db.moments.find({"group_id": DEMO_GROUP["group_id"]}, {"_id": 0}).to_list(10)
     for moment in demo_moments:
-        if isinstance(moment.get("created_at"), str):
-            moment["created_at"] = datetime.fromisoformat(moment["created_at"])
+        # Convert datetime objects to ISO format strings
+        if isinstance(moment.get("created_at"), datetime):
+            moment["created_at"] = moment["created_at"].isoformat()
+        if moment.get("plan_data"):
+            for key in ["generated_at", "accepted_at", "completed_at"]:
+                if key in moment["plan_data"] and isinstance(moment["plan_data"][key], datetime):
+                    moment["plan_data"][key] = moment["plan_data"][key].isoformat()
+        # Handle media uploaded_at
+        if moment.get("media"):
+            for media_item in moment["media"]:
+                if isinstance(media_item.get("uploaded_at"), datetime):
+                    media_item["uploaded_at"] = media_item["uploaded_at"].isoformat()
     if demo_moments:
         return demo_moments
     return [DEMO_MOMENT]
