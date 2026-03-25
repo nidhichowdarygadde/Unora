@@ -86,6 +86,7 @@ class Group(BaseModel):
     city: str
     country: str
     creator_user_id: str
+    is_demo: Optional[bool] = False
     members: List[Member] = []
     current_plan: Optional[dict] = None
     created_at: datetime
