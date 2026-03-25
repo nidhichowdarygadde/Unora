@@ -12,6 +12,7 @@ import uuid
 from datetime import datetime, timezone, timedelta
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 import json
+from demo_data import DEMO_GROUP, DEMO_MOMENT, DEMO_INVITE_TOKEN, DEMO_JOIN_MEMBER
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
