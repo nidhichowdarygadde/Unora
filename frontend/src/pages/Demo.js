@@ -80,8 +80,40 @@ function Demo() {
         </Button>
 
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-light tracking-tight mb-2">Unora Demo</h1>
-          <p className="text-muted-foreground mb-6">See how groups plan meetups together</p>
+          <div className="inline-block px-3 py-1 rounded-full bg-muted text-muted-foreground text-xs font-medium mb-4">
+            This is a demo preview
+          </div>
+          <h1 className="text-4xl font-light tracking-tight mb-3">Unora Demo</h1>
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed mb-8">
+            Unora helps small groups of friends decide what to do and when to meet — fairly and effortlessly.
+          </p>
+          
+          {/* How It Works */}
+          <div className="rounded-3xl border border-border/50 bg-card p-6 md:p-8 max-w-2xl mx-auto mb-8">
+            <h3 className="text-sm font-medium text-muted-foreground mb-6">How It Works</h3>
+            <div className="space-y-4 text-left">
+              {[
+                { num: '1', text: 'Create a group' },
+                { num: '2', text: 'Everyone shares preferences' },
+                { num: '3', text: 'AI suggests a balanced plan' },
+                { num: '4', text: 'Meet offline' },
+                { num: '5', text: 'Save memories as Moments' }
+              ].map((step, idx) => (
+                <motion.div
+                  key={step.num}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="flex items-center gap-4"
+                >
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <span className="text-sm font-medium text-primary">{step.num}</span>
+                  </div>
+                  <span className="text-sm">{step.text}</span>
+                </motion.div>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Demo Group Info */}
