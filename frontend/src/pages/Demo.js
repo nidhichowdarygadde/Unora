@@ -38,8 +38,17 @@ function Demo() {
   };
 
   const handleTryYourself = () => {
+    console.log('Invite token:', inviteToken);
+    console.log('Demo group:', demoGroup);
+    
     if (inviteToken && demoGroup) {
-      window.location.href = `/invite/${demoGroup.group_id}/${inviteToken}`;
+      const inviteUrl = `/invite/${demoGroup.group_id}/${inviteToken}`;
+      console.log('Redirecting to:', inviteUrl);
+      window.location.href = inviteUrl;
+    } else {
+      console.error('Missing data:', { inviteToken, demoGroup });
+      // Fallback to hardcoded values if fetch failed
+      window.location.href = `/invite/demo_group_showcase/permanent_demo_invite_token_unora`;
     }
   };
 
