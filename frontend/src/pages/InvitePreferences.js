@@ -32,6 +32,7 @@ function InvitePreferences() {
   const [availability, setAvailability] = useState({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [error, setError] = useState(null);
   const { groupId, memberToken } = useParams();
   const navigate = useNavigate();
   const joinAttempted = useRef(false);
@@ -41,6 +42,8 @@ function InvitePreferences() {
   }, [groupId, memberToken]);
 
   const checkAuthAndFetch = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const authResponse = await fetch(`${API}/auth/me`, {
         credentials: 'include',
@@ -68,29 +71,24 @@ function InvitePreferences() {
               return;
             }
           }
-        } catch (error) {
-          console.error('Join error:', error);
+        } catch (err) {
+          // Join may fail if token already claimed - continue to show preferences
         }
       }
 
       const response = await fetch(`${API}/invite/${groupId}/${memberToken}`);
-      console.log('Invite fetch response status:', response.status);
       if (response.ok) {
         const data = await response.json();
-        console.log('Invite data:', data);
         setInviteData(data);
         const member = data.member;
         setInterests(member.interests || []);
         setBudget([member.budget_min || 0, member.budget_max || 100]);
         setAvailability(member.availability || {});
       } else {
-        const errorText = await response.text();
-        console.error('Invite fetch failed:', response.status, errorText);
-        toast.error('Invalid invite link');
+        setError('invite');
       }
-    } catch (error) {
-      console.error('Invite fetch error:', error);
-      toast.error('Failed to load invite');
+    } catch (err) {
+      setError('network');
     } finally {
       setLoading(false);
     }
@@ -151,7 +149,7 @@ function InvitePreferences() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen" data-testid="invite-loading">
         <div className="text-muted-foreground">Loading...</div>
       </div>
     );
@@ -159,8 +157,38 @@ function InvitePreferences() {
 
   if (!inviteData) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen px-6">
-        <div className="text-muted-foreground mb-4">Invalid invite link</div>
+      <div className="flex flex-col items-center justify-center min-h-screen px-6" data-testid="invite-error-state">
+        <div className="max-w-md text-center space-y-4">
+          <h2 className="text-xl font-medium">
+            {error === 'network' ? 'Connection issue' : 'Invalid invite link'}
+          </h2>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            {error === 'network'
+              ? 'Unable to reach the server. Please check your connection and try again.'
+              : 'This invite link may have expired or already been used.'}
+          </p>
+          <div className="flex flex-col gap-3 pt-2">
+            <Button
+              data-testid="invite-retry-button"
+              onClick={() => {
+                joinAttempted.current = false;
+                checkAuthAndFetch();
+              }}
+              variant="outline"
+              className="rounded-full"
+            >
+              Try again
+            </Button>
+            <Button
+              data-testid="invite-go-home-button"
+              onClick={() => navigate('/')}
+              variant="ghost"
+              className="rounded-full text-muted-foreground"
+            >
+              Go to homepage
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -256,6 +284,7 @@ function InvitePreferences() {
           <Button
             type="submit"
             disabled={saving}
+            data-testid="invite-join-button"
             className="w-full rounded-full py-6 text-lg font-medium hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
           >
             {saving ? 'Joining...' : 'Join Group'}

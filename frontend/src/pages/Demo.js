@@ -8,8 +8,9 @@ import { API } from '@/App';
 function Demo() {
   const [demoGroup, setDemoGroup] = useState(null);
   const [demoMoments, setDemoMoments] = useState([]);
-  const [inviteToken, setInviteToken] = useState(null);
+  const [inviteToken, setInviteToken] = useState('permanent_demo_invite_token_unora');
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,25 +31,20 @@ function Demo() {
         const tokenData = await tokenRes.json();
         setInviteToken(tokenData.invite_token);
       }
+      
+      if (!groupRes.ok) setFetchError(true);
     } catch (error) {
-      console.error('Failed to load demo:', error);
+      setFetchError(true);
     } finally {
       setLoading(false);
     }
   };
 
   const handleTryYourself = () => {
-    console.log('Invite token:', inviteToken);
-    console.log('Demo group:', demoGroup);
-    
     if (inviteToken && demoGroup) {
-      const inviteUrl = `/invite/${demoGroup.group_id}/${inviteToken}`;
-      console.log('Redirecting to:', inviteUrl);
-      window.location.href = inviteUrl;
+      navigate(`/invite/${demoGroup.group_id}/${inviteToken}`);
     } else {
-      console.error('Missing data:', { inviteToken, demoGroup });
-      // Fallback to hardcoded values if fetch failed
-      window.location.href = `/invite/demo_group_showcase/permanent_demo_invite_token_unora`;
+      navigate(`/invite/demo_group_showcase/permanent_demo_invite_token_unora`);
     }
   };
 
@@ -62,8 +58,39 @@ function Demo() {
 
   if (!demoGroup) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-muted-foreground">Demo not available</div>
+      <div className="flex flex-col items-center justify-center min-h-screen px-6" data-testid="demo-error-state">
+        <div className="max-w-md text-center space-y-4">
+          <h2 className="text-xl font-medium">
+            {fetchError ? 'Unable to load demo' : 'Demo not available'}
+          </h2>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            {fetchError
+              ? 'We had trouble connecting. Please try again.'
+              : 'The demo group could not be found.'}
+          </p>
+          <div className="flex flex-col gap-3 pt-2">
+            <Button
+              data-testid="demo-retry-button"
+              onClick={() => {
+                setLoading(true);
+                setFetchError(false);
+                fetchDemoData();
+              }}
+              variant="outline"
+              className="rounded-full"
+            >
+              Try again
+            </Button>
+            <Button
+              data-testid="demo-go-home-button"
+              onClick={() => navigate('/')}
+              variant="ghost"
+              className="rounded-full text-muted-foreground"
+            >
+              Go to homepage
+            </Button>
+          </div>
+        </div>
       </div>
     );
   }
@@ -263,6 +290,7 @@ function Demo() {
           <Button
             onClick={handleTryYourself}
             size="lg"
+            data-testid="join-demo-group-button"
             className="rounded-full px-8 py-6 text-lg font-medium hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
           >
             <ExternalLink className="w-5 h-5 mr-2" strokeWidth={1.5} />

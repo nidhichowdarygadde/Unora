@@ -72,9 +72,21 @@ async def migrate_existing_groups():
 
 
 # Demo endpoints (public, no auth required)
+async def ensure_demo_data():
+    """Re-seed demo data if missing"""
+    demo_exists = await db.groups.find_one({"group_id": DEMO_GROUP["group_id"]})
+    if not demo_exists:
+        await db.groups.insert_one(DEMO_GROUP.copy())
+        await db.moments.insert_one(DEMO_MOMENT.copy())
+        logger.info("Demo data re-seeded")
+        return True
+    return False
+
+
 @api_router.get("/demo/group")
 async def get_demo_group():
     """Public demo group data"""
+    await ensure_demo_data()
     demo_group = await db.groups.find_one({"group_id": DEMO_GROUP["group_id"]}, {"_id": 0})
     if demo_group:
         # Convert datetime objects to ISO format strings

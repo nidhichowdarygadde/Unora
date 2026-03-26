@@ -9,7 +9,7 @@ from pymongo import MongoClient
 
 class UnoraAPITester:
     def __init__(self):
-        self.base_url = "https://meetup-maker-10.preview.emergentagent.com/api"
+        self.base_url = "https://invite-test-build.preview.emergentagent.com/api"
         self.session_token = None
         self.user_id = None
         self.tests_run = 0
