@@ -1,9 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import { Users, Calendar, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 function Landing() {
+  const navigate = useNavigate();
   const handleLogin = () => {
     const redirectUrl = window.location.origin + '/dashboard';
     window.location.href = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
@@ -89,9 +91,19 @@ function Landing() {
             data-testid="landing-login-button"
             onClick={handleLogin}
             size="lg"
-            className="rounded-full px-8 py-6 text-lg font-medium hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+            className="rounded-full px-8 py-6 text-lg font-medium hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 mb-4"
           >
             Continue with Google
+          </Button>
+          
+          <Button
+            data-testid="view-demo-button"
+            onClick={() => navigate('/demo')}
+            variant="outline"
+            size="lg"
+            className="rounded-full px-8 py-6 text-lg font-medium hover:scale-[1.02] active:scale-[0.98] transition-all duration-200"
+          >
+            View Demo
           </Button>
         </motion.div>
       </div>

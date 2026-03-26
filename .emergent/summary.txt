@@ -1,0 +1,129 @@
+<analysis>**original_problem_statement:** 
+Build a mobile-first full-stack web app called “Unora”. Unora is a private, invite-only group planning app designed to help small groups of friends fairly decide when and where to meet offline. Core features include group creation, invite links, member preference collection (interests, budget, availability), AI-generated balanced activity suggestions, and a Moments feature for private memory keeping (photo/video uploads) after a plan is completed. The app must use Google Auth, OpenAI GPT-5.2 (via Emergent LLM key), and maintain a calm, minimal, premium aesthetic.
+
+**User's preferred language:** English
+
+**what currently exists?** 
+A fully functional, responsive full-stack application (FastAPI + React + MongoDB) with Google Authentication. Features include Group Dashboard, Invite Links, Preference Collection, AI Plan Generation, Plan Lifecycle (Accept -> Mark as Done), Moments (with media upload and lightbox), and a newly added Demo Mode () that uses seeded MongoDB data for showcasing the app without initial setup. 
+
+**Last working item:**
+- Last item agent was working: Debugging and fixing the Join Demo Group button on the  page. The user reported an Invalid link error. The agent added debug logs and the user provided a screenshot showing a  error when the frontend attempts to fetch the invite link details from the backend.
+- Status: IN PROGRESS
+- Agent Testing Done: N
+- Which testing method agent to use?: Frontend testing agent / curl to verify the backend endpoint / browser console via screenshot tool.
+- User Testing Done: Y (User provided screenshots of the console 404 error).
+
+**All Pending/In progress Issue list:**
+- Issue 1: 404 Not Found Error on Demo Invite Link Validation (P0)
+   - Attempted fixes: The agent added detailed console logging in  which successfully revealed that the  request to validate the invite link is returning a 404 error. The agent was cut off before fixing the endpoint mapping.
+   - Next debug checklist: 
+     - Check  to verify the exact route definition for the invite endpoint. Does it match ?
+     - Check  (around line 70-80) to see how the fetch URL is constructed. Ensure it accurately matches the backend route.
+     - Check if  is being appended correctly without double slashes.
+   - Why fix this issue and what will be achieved with the fix?: Users (and the demo mode) rely entirely on this invite link logic to join groups. Fixing this allows the core onboarding flow and the demo showcase to function properly.
+   - Status: IN PROGRESS
+   - Is recurring issue?: N
+   - Should Test frontend/backend/both after fix?: Both (curl the backend endpoint, then verify UI flow).
+
+**In progress Task List:**
+None.
+
+**Upcoming and Future Tasks:**
+None explicitly requested by the user at this time. The immediate priority is fixing the 404 bug to allow the deployment to be usable.
+
+**Completed work in this session:**
+- Initial app structure and UI components (DONE)
+- Emergent Google Auth integration (DONE)
+- Core group creation and invite links (DONE)
+- Member preference collection (DONE)
+- AI Plan Generation logic (DONE)
+- Moments feature with Media upload, Lightbox viewing, and deletion (DONE)
+- Shared Environment Update: Google Auth required for all members, My Groups dashboard (DONE)
+- Responsive layout adjustments for tablet/desktop (DONE)
+- Demo Mode () with seeded database logic (DONE)
+- Fixed MongoDB  serialization errors during deployment testing (DONE)
+
+**Earlier issues found/mentioned but not fixed:**
+None.
+
+**Known issue recurrence from previous fork:**
+- Issue recurrence in previous fork: N/A
+- Recurrence count: 0
+- Status: NOT STARTED
+
+**Code Architecture:**
+
+
+**Key Technical Concepts:**
+React.js, Tailwind CSS, Shadcn UI, FastAPI, MongoDB, Pydantic, Emergent Google Auth, Emergent LLM Key (OpenAI).
+
+**key DB schema:**
+- root: 
+- : 
+
+**changes in tech stack:**
+None.
+
+**All files of reference:**
+-  (Currently throwing 404 on API fetch)
+-  (Contains the API routing logic that is returning the 404)
+-  (Contains seeded data for the demo group)
+-  (Frontend demo entry point)
+
+**Areas that need refactoring:**
+Double-check all frontend  calls to ensure robust error handling and correct URL construction, specifically regarding the  environment variable to prevent double slashes or missing  prefixes.
+
+**key api endpoints:**
+-  (Currently failing with 404)
+- 
+- 
+- 
+
+**Critical Info for New Agent:**
+- **MongoDB Serialization:** The deployment environment uses MongoDB Atlas. The backend  (ObjectId) and  objects must be converted to strings before returning them in JSON responses to prevent  during deployment.
+- **Frontend API Base:** Always use  for frontend requests. Ensure the backend routes are explicitly defined with the  prefix in .
+- **Current Blocker:** The user's last screenshot clearly shows the fetch URL:  resulting in a . Start your investigation by comparing this URL against the routes defined in .
+
+**documents and test reports created in this job:**
+- 
+- 
+- 
+- 
+
+**Last 10 User Messages and any pending HUMAN messages:**
+1. User asked to export the complete project to GitHub.
+2. User reported that only  pushed successfully.
+3. User shared the error log showing a  on GitHub push.
+4. User confirmed successful push after reconnecting GitHub, requested a Demo Mode () and a reusable Real App Sharing flow.
+5. User requested UI enhancements to the  page (text changes, steps).
+6. User reported a deployment error:  in backend logs.
+7. User reported another deployment error related to  serialization.
+8. User stated Join Demo Group button leads to an Invalid link page, shared screenshots.
+9. User stated the button still does not work.
+10. User shared browser console screenshots revealing a  error on the invite API fetch request. (PENDING FIX)
+
+**Project Health Check:**
+Broken (Core invite/demo join flow is failing due to a 404 backend error).
+
+**3rd Party Integrations:**
+- OpenAI GPT-5.2 — uses Emergent LLM Key
+- Emergent-managed Google Auth — requires no user key
+
+**Testing status:**
+- Testing agent used after significant changes: YES (iterations 1 & 2)
+- Troubleshoot agent used after agent stuck in loop: NO
+- Test files created: , 
+- Known regressions: Invite endpoint returns 404.
+
+**Credentials to test flow:**
+Use the  page to interact with seeded data, or log in via Google Auth to test standard user flows.
+
+**What agent forgot to execute:**
+The agent diagnosed the issue as a 404 Not Found on the invite endpoint but was interrupted before inspecting  to fix the missing/mismatched API route or fixing the fetch URL in .
+
+**Debugging checklist for current issue**
+Issue: Join Demo Group button fails with 404 on API request.
+Frontend files to check: 
+-  (Check the  block inside the  handling the invite validation)
+Backend files to check: 
+-  (Search for the invite validation route. Ensure it exactly matches the path requested by the frontend, likely ).</analysis>

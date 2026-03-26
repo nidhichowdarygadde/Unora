@@ -12,6 +12,7 @@ import uuid
 from datetime import datetime, timezone, timedelta
 from emergentintegrations.llm.chat import LlmChat, UserMessage
 import json
+from demo_data import DEMO_GROUP, DEMO_MOMENT, DEMO_INVITE_TOKEN, DEMO_JOIN_MEMBER
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -52,8 +53,79 @@ async def migrate_existing_groups():
                     {"$set": {"members": group["members"], "country": group.get("country", "United States")}}
                 )
                 logger.info(f"Migrated group {group['group_id']}")
+        
+        # Seed demo data if not exists or update if needed
+        demo_exists = await db.groups.find_one({"group_id": DEMO_GROUP["group_id"]})
+        if demo_exists:
+            # Update existing demo group to ensure it has the join member
+            await db.groups.update_one(
+                {"group_id": DEMO_GROUP["group_id"]},
+                {"$set": {"members": DEMO_GROUP["members"]}}
+            )
+            logger.info("Demo group updated with join member")
+        else:
+            await db.groups.insert_one(DEMO_GROUP)
+            await db.moments.insert_one(DEMO_MOMENT)
+            logger.info("Demo data seeded successfully")
     except Exception as e:
         logger.error(f"Migration error: {e}")
+
+
+# Demo endpoints (public, no auth required)
+async def ensure_demo_data():
+    """Re-seed demo data if missing"""
+    demo_exists = await db.groups.find_one({"group_id": DEMO_GROUP["group_id"]})
+    if not demo_exists:
+        await db.groups.insert_one(DEMO_GROUP.copy())
+        await db.moments.insert_one(DEMO_MOMENT.copy())
+        logger.info("Demo data re-seeded")
+        return True
+    return False
+
+
+@api_router.get("/demo/group")
+async def get_demo_group():
+    """Public demo group data"""
+    await ensure_demo_data()
+    demo_group = await db.groups.find_one({"group_id": DEMO_GROUP["group_id"]}, {"_id": 0})
+    if demo_group:
+        # Convert datetime objects to ISO format strings
+        if isinstance(demo_group.get("created_at"), datetime):
+            demo_group["created_at"] = demo_group["created_at"].isoformat()
+        if demo_group.get("current_plan"):
+            for key in ["generated_at", "accepted_at", "completed_at"]:
+                if key in demo_group["current_plan"] and isinstance(demo_group["current_plan"][key], datetime):
+                    demo_group["current_plan"][key] = demo_group["current_plan"][key].isoformat()
+        return demo_group
+    return DEMO_GROUP
+
+
+@api_router.get("/demo/moments")
+async def get_demo_moments():
+    """Public demo moments data"""
+    demo_moments = await db.moments.find({"group_id": DEMO_GROUP["group_id"]}, {"_id": 0}).to_list(10)
+    for moment in demo_moments:
+        # Convert datetime objects to ISO format strings
+        if isinstance(moment.get("created_at"), datetime):
+            moment["created_at"] = moment["created_at"].isoformat()
+        if moment.get("plan_data"):
+            for key in ["generated_at", "accepted_at", "completed_at"]:
+                if key in moment["plan_data"] and isinstance(moment["plan_data"][key], datetime):
+                    moment["plan_data"][key] = moment["plan_data"][key].isoformat()
+        # Handle media uploaded_at
+        if moment.get("media"):
+            for media_item in moment["media"]:
+                if isinstance(media_item.get("uploaded_at"), datetime):
+                    media_item["uploaded_at"] = media_item["uploaded_at"].isoformat()
+    if demo_moments:
+        return demo_moments
+    return [DEMO_MOMENT]
+
+
+@api_router.get("/demo/invite-token")
+async def get_demo_invite_token():
+    """Get the permanent demo invite token"""
+    return {"invite_token": DEMO_INVITE_TOKEN, "group_id": DEMO_GROUP["group_id"]}
 
 
 class User(BaseModel):
@@ -85,6 +157,7 @@ class Group(BaseModel):
     city: str
     country: str
     creator_user_id: str
+    is_demo: Optional[bool] = False
     members: List[Member] = []
     current_plan: Optional[dict] = None
     created_at: datetime

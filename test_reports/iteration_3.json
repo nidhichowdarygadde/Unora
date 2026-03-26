@@ -1,0 +1,66 @@
+{
+  "summary": "Verified fix for 'Join Demo Group' 404 bug. All demo endpoints working correctly. Backend returns 200 for valid demo invite link. Frontend /demo page renders correctly with all data. Navigation to invite page works (redirects to auth as expected).",
+
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": []
+  },
+
+  "passed_tests": [
+    "GET /api/demo/group returns 200 with correct group data (Weekend Squad, San Francisco)",
+    "GET /api/demo/group returns 5 members (Alex, Jordan, Sam, Riley, New Member)",
+    "GET /api/demo/group includes current_plan with activity, location, suggested_time, explanation",
+    "GET /api/demo/moments returns 200 with demo moments",
+    "GET /api/demo/invite-token returns correct token (permanent_demo_invite_token_unora)",
+    "GET /api/invite/demo_group_showcase/permanent_demo_invite_token_unora returns 200 with group data",
+    "GET /api/invite/{invalid_group}/{token} returns 404 (proper error handling)",
+    "GET /api/invite/{group}/{invalid_token} returns 404 (proper error handling)",
+    "/demo page loads correctly with demo group data",
+    "/demo page displays all 5 members with interests",
+    "/demo page shows completed plan (Golden Gate Park Picnic)",
+    "/demo page shows Moments section with images",
+    "'Join Demo Group' button exists with data-testid='join-demo-group-button'",
+    "'Join Demo Group' button is visible and clickable",
+    "Clicking 'Join Demo Group' navigates to /invite/demo_group_showcase/permanent_demo_invite_token_unora",
+    "Invite page correctly redirects to Google Auth (expected behavior for auth-gated page)"
+  ],
+
+  "test_report_links": [
+    "/app/backend/tests/test_demo_endpoints.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+
+  "action_items": [],
+
+  "critical_code_review_comments": [
+    "Demo data auto-seeding on startup working correctly (ensure_demo_data helper)",
+    "Error handling in Demo.js includes retry and fallback UI",
+    "InvitePreferences.js has proper error states with 'Try again' and 'Go to homepage' buttons",
+    "All data-testid attributes present for testing"
+  ],
+
+  "updated_files": [
+    "/app/backend/tests/test_demo_endpoints.py"
+  ],
+
+  "success_rate": {
+    "backend": "100% (9/9 tests passed)",
+    "frontend": "100% (demo page and navigation working)"
+  },
+
+  "seed_data_creation": "Demo data auto-seeded by backend on startup (demo_group_showcase with 5 members)",
+
+  "retest_needed": false,
+
+  "should_main_agent_self_test": false,
+
+  "context_for_next_testing_agent": "The 404 bug for 'Join Demo Group' has been fixed. Backend seeds demo data on startup and has ensure_demo_data() helper that re-seeds if missing. Demo endpoints are public (no auth). Invite page requires Google Auth - after auth, it shows preferences form or error state. All tests passing.",
+
+  "rca_of_the_issue": "Original 404 was caused by demo data not being seeded in MongoDB. Fix: Backend startup now seeds demo group via migrate_existing_groups() and ensure_demo_data() helper re-seeds if data is missing. Frontend now uses React Router navigate() instead of window.location.href for smoother navigation."
+}
