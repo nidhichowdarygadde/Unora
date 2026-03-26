@@ -74,17 +74,22 @@ function InvitePreferences() {
       }
 
       const response = await fetch(`${API}/invite/${groupId}/${memberToken}`);
+      console.log('Invite fetch response status:', response.status);
       if (response.ok) {
         const data = await response.json();
+        console.log('Invite data:', data);
         setInviteData(data);
         const member = data.member;
         setInterests(member.interests || []);
         setBudget([member.budget_min || 0, member.budget_max || 100]);
         setAvailability(member.availability || {});
       } else {
+        const errorText = await response.text();
+        console.error('Invite fetch failed:', response.status, errorText);
         toast.error('Invalid invite link');
       }
     } catch (error) {
+      console.error('Invite fetch error:', error);
       toast.error('Failed to load invite');
     } finally {
       setLoading(false);
