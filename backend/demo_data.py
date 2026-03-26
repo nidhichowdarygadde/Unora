@@ -3,7 +3,6 @@ Demo data for Unora showcase
 This creates a realistic sample group with all features demonstrated
 """
 from datetime import datetime, timezone
-import uuid
 
 DEMO_GROUP_ID = "demo_group_showcase"
 DEMO_MOMENT_ID = "demo_moment_showcase"
@@ -79,11 +78,11 @@ DEMO_GROUP = {
         "suggested_time": "Saturday afternoon, 2-5pm",
         "explanation": "This plan balances everyone's love for outdoor activities with the group's budget range ($15-$80). Saturday afternoon works for all four members, and Golden Gate Park offers free entry with optional paid botanical garden access. The casual setting encourages conversation and connection without pressure.",
         "status": "completed",
-        "generated_at": "2025-01-25T14:30:00Z",
-        "accepted_at": "2025-01-25T15:00:00Z",
-        "completed_at": "2025-01-27T18:00:00Z"
+        "generated_at": datetime(2025, 1, 25, 14, 30, 0, tzinfo=timezone.utc),
+        "accepted_at": datetime(2025, 1, 25, 15, 0, 0, tzinfo=timezone.utc),
+        "completed_at": datetime(2025, 1, 27, 18, 0, 0, tzinfo=timezone.utc)
     },
-    "created_at": "2025-01-20T10:00:00Z"
+    "created_at": datetime(2025, 1, 20, 10, 0, 0, tzinfo=timezone.utc)
 }
 
 DEMO_MOMENT = {
@@ -95,30 +94,30 @@ DEMO_MOMENT = {
         "suggested_time": "Saturday afternoon, 2-5pm",
         "explanation": "This plan balances everyone's love for outdoor activities with the group's budget range ($15-$80). Saturday afternoon works for all four members, and Golden Gate Park offers free entry with optional paid botanical garden access.",
         "status": "completed",
-        "completed_at": "2025-01-27T18:00:00Z"
+        "completed_at": datetime(2025, 1, 27, 18, 0, 0, tzinfo=timezone.utc)
     },
     "media": [
         {
             "type": "image",
             "url": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
             "filename": "park_view.jpg",
-            "uploaded_at": "2025-01-27T18:30:00Z"
+            "uploaded_at": datetime(2025, 1, 27, 18, 30, 0, tzinfo=timezone.utc)
         },
         {
             "type": "image",
             "url": "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&q=80",
             "filename": "group_photo.jpg",
-            "uploaded_at": "2025-01-27T18:35:00Z"
+            "uploaded_at": datetime(2025, 1, 27, 18, 35, 0, tzinfo=timezone.utc)
         },
         {
             "type": "image",
             "url": "https://images.unsplash.com/photo-1516339901601-2e1b62dc0c45?w=800&q=80",
             "filename": "botanical_gardens.jpg",
-            "uploaded_at": "2025-01-27T19:00:00Z"
+            "uploaded_at": datetime(2025, 1, 27, 19, 0, 0, tzinfo=timezone.utc)
         }
     ],
     "caption": "Perfect afternoon at Golden Gate Park! The weather was beautiful, and we spent hours exploring the botanical gardens and sharing stories over our picnic. Already planning the next one!",
-    "created_at": "2025-01-27T18:00:00Z"
+    "created_at": datetime(2025, 1, 27, 18, 0, 0, tzinfo=timezone.utc)
 }
 
 # Permanent demo invite link token
