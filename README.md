@@ -15,15 +15,16 @@ The goal of Unora is to reduce planning friction, decision fatigue, and endless 
 Experience Unora instantly:
 
 🔗 **Demo (no login required)**
-https://meetup-maker-10.emergent.host/demo
+https://invite-test-build.preview.emergentagent.com/demo
 
 🔗 **Try it yourself (join demo group)**
-https://meetup-maker-10.emergent.host/invite/demo_group_showcase/permanent_demo_invite_token_unora
+https://invite-test-build.preview.emergentagent.com/invite/demo_group_showcase/permanent_demo_invite_token_unora
 
 🌐 **Live App**
-https://meetup-maker-10.emergent.host
+[https://meetup-maker-10.emergent.host](https://invite-test-build.preview.emergentagent.com)
 
-> Note: The demo group is a shared environment for testing. Normal groups are limited to 3–10 members to maintain intimacy.
+> Note: This is a preview deployment used for showcasing Unora.
+The demo group is a shared environment for testing. Normal groups are limited to 3–10 members to maintain intimacy.
 
 ---
 
