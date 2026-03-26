@@ -70,6 +70,17 @@ DEMO_GROUP = {
                 "Sunday": ["Morning", "Afternoon", "Evening"]
             },
             "has_set_preferences": True
+        },
+        {
+            "member_id": "demo_join_member",
+            "member_token": "permanent_demo_invite_token_unora",
+            "member_user_id": None,
+            "name": "New Member",
+            "interests": [],
+            "budget_min": 0,
+            "budget_max": 100,
+            "availability": {},
+            "has_set_preferences": False
         }
     ],
     "current_plan": {
