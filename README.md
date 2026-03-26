@@ -1,128 +1,153 @@
 # Project Unora
 
 Unora
-
-Make time, together.
+**Make time, together.**
 
 Unora is a private, invite-only group planning web app designed to help small groups of friends fairly decide when and where to meet offline, and quietly preserve shared memories afterward.
 
 The goal of Unora is to reduce planning friction, decision fatigue, and endless group chats while encouraging real-world connection over screen time.
 
-✨ Key Features
-🧑‍🤝‍🧑 Private Group Planning
+---
 
-Create invite-only groups (3–10 members)
+## 🌿 Live Experience
 
-Shared ownership with no single “admin” dominance
+Experience Unora instantly:
 
-Any member can participate equally in planning and decisions
+🔗 **Demo (no login required)**  
+https://meetup-maker-10.emergent.host/demo  
 
-📍 Fair AI-Powered Suggestions
+🔗 **Try it yourself (join demo group)**  
+https://meetup-maker-10.emergent.host/invite/demo_group_showcase/permanent_demo_invite_token_unora  
 
-AI generates one balanced activity suggestion per group
+> Note: The demo group is a shared environment for testing. Normal groups are limited to 3–10 members to maintain intimacy.
 
-Considers:
+---
 
-interests
+## ✨ Key Features
 
-budget preferences
+### 🧑‍🤝‍🧑 Private Group Planning
 
-availability overlap
+- Create invite-only groups (3–10 members)  
+- Shared ownership with no single “admin” dominance  
+- Any member can participate equally in planning and decisions  
 
-city + country context
+---
 
-Provides a calm explanation of why the suggestion works for the group
+### 📍 Fair AI-Powered Suggestions
 
-🗓️ Availability-Aware Scheduling
+- AI generates one balanced activity suggestion per group  
+- Considers:
+  - interests  
+  - budget preferences  
+  - availability overlap  
+  - city + country context  
 
-Members select days and time blocks (morning / afternoon / evening)
+- Provides a calm explanation of why the suggestion works for the group  
 
-Plans are suggested based on the fairest overlap
+---
 
-Availability can be updated anytime
+### 🗓️ Availability-Aware Scheduling
 
-📌 Persistent Plans
+- Members select days and time blocks (morning / afternoon / evening)  
+- Plans are suggested based on the fairest overlap  
+- Availability can be updated anytime  
 
-Accepted plans remain visible as the group’s Active Plan
+---
 
-Clear plan lifecycle:
+### 📌 Persistent Plans
 
-generated → accepted → completed
+- Accepted plans remain visible as the group’s Active Plan  
 
-📖 Moments (Private Memory Keeping)
+Clear plan lifecycle:  
+`generated → accepted → completed`
 
-When a plan is completed, a Moment is automatically created
+---
 
-Journal-style cards (not a feed)
+### 📖 Moments (Private Memory Keeping)
+
+- When a plan is completed, a Moment is automatically created  
+- Journal-style cards (not a feed)  
 
 Group members can optionally add:
+- photos  
+- short videos  
+- brief comments  
 
-photos
+No likes, reactions, counts, or public sharing  
 
-short videos
+---
 
-brief comments
+### 🏠 My Groups Dashboard
 
-No likes, reactions, counts, or public sharing
+- Each user has a personal home page showing only the groups they belong to  
+- Create new groups or open existing ones  
+- Invite-based membership with Google authentication  
 
-🏠 My Groups Dashboard
+---
 
-Each user has a personal home page showing only the groups they belong to
-
-Create new groups or open existing ones
-
-Invite-based membership with Google authentication
-
-🎨 Design Philosophy
+## 🎨 Design Philosophy
 
 Unora follows a calm, minimal, human-first design approach:
 
-Mobile-first layout
+- Mobile-first layout  
+- Soft transitions and subtle animations  
+- No gamification, notifications, or engagement tricks  
 
-Soft transitions and subtle animations
+Encourages intentional use, not prolonged screen time  
 
-No gamification, notifications, or engagement tricks
+---
 
-Encourages intentional use, not prolonged screen time
+## 🔐 Privacy & Ethics
 
-🔐 Privacy & Ethics
+- Invite-only by default  
+- No public discovery  
+- City-level location only (no precise tracking)  
+- No selling or sharing of user data  
 
-Invite-only by default
+All Moments and plans are visible only to group members  
 
-No public discovery
+---
 
-City-level location only (no precise tracking)
+## 🛠️ Tech Stack
 
-No selling or sharing of user data
+- **Frontend:** Mobile-first web UI (React + Tailwind + ShadCN)  
+- **Backend:** FastAPI (Python)  
+- **AI:** OpenAI GPT-5.2 (plan generation & reasoning)  
+- **Auth:** Google Authentication  
+- **Database:** MongoDB (groups, plans, moments)  
 
-All Moments and plans are visible only to group members
+---
 
-🛠️ Tech Stack
+## 🚧 Project Status
 
-Frontend: Mobile-first web UI
+**Version:** v1.0 (MVP)
 
-Backend: Full-stack application with authenticated user sessions
+Unora is currently live and functional.
 
-AI: OpenAI GPT-5.2 for plan generation and reasoning
-
-Auth: Google Authentication
-
-Database: MongoDB (groups, plans, moments)
-
-🚧 Project Status
-
-Version: v1.0
-Unora is currently in active development as a functional MVP.
+This version focuses on:
+- core planning flow  
+- shared group decision-making  
+- private memory preservation  
 
 Future enhancements are intentionally deferred to preserve simplicity and clarity.
 
-🌱 Motivation
+---
+
+## 🌱 Motivation
 
 Modern social apps optimise for engagement and attention.
+
 Unora is built on a different principle:
 
-Technology should help people show up for each other — then step out of the way.
+> Technology should help people show up for each other — then step out of the way.
 
-📌 Note
+---
 
-This project is part of an ongoing exploration into ethical product design, calm technology, and AI-assisted collaboration.
+## 📌 Note
+
+This project is part of an ongoing exploration into:
+- ethical product design  
+- calm technology  
+- AI-assisted collaboration  
+
+Feedback and thoughts are always welcome.
