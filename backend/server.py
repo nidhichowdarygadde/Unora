@@ -54,9 +54,16 @@ async def migrate_existing_groups():
                 )
                 logger.info(f"Migrated group {group['group_id']}")
         
-        # Seed demo data if not exists
+        # Seed demo data if not exists or update if needed
         demo_exists = await db.groups.find_one({"group_id": DEMO_GROUP["group_id"]})
-        if not demo_exists:
+        if demo_exists:
+            # Update existing demo group to ensure it has the join member
+            await db.groups.update_one(
+                {"group_id": DEMO_GROUP["group_id"]},
+                {"$set": {"members": DEMO_GROUP["members"]}}
+            )
+            logger.info("Demo group updated with join member")
+        else:
             await db.groups.insert_one(DEMO_GROUP)
             await db.moments.insert_one(DEMO_MOMENT)
             logger.info("Demo data seeded successfully")
