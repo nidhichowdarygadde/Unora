@@ -1,7 +1,8 @@
 # Project Unora
 
 Unora
-**Make time, together.**
+
+(**Make time, together.**)
 
 Unora is a private, invite-only group planning web app designed to help small groups of friends fairly decide when and where to meet offline, and quietly preserve shared memories afterward.
 
